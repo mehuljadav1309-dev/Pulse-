@@ -1,0 +1,158 @@
+import type { Config } from "tailwindcss";
+
+const config: Config = {
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        background: "#0A0A0A",
+        surface: "#121212",
+        card: "rgba(255,255,255,0.05)",
+        "card-hover": "rgba(255,255,255,0.08)",
+        border: "rgba(255,255,255,0.08)",
+        "border-strong": "rgba(255,255,255,0.14)",
+        accent: {
+          DEFAULT: "#4F8CFF",
+          50: "#EEF4FF",
+          100: "#DCE8FF",
+          200: "#B8D1FF",
+          300: "#8FB1FF",
+          400: "#6792FF",
+          500: "#4F8CFF",
+          600: "#2E6AE6",
+          700: "#1F4FB3",
+          800: "#173B85",
+          900: "#0F2859",
+        },
+        mint: {
+          DEFAULT: "#00E5A8",
+          400: "#3DEDBC",
+          500: "#00E5A8",
+          600: "#00B889",
+        },
+        success: "#22C55E",
+        warning: "#F59E0B",
+        danger: "#EF4444",
+      },
+      fontFamily: {
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        display: ["var(--font-inter-tight)", "var(--font-inter)", "system-ui", "sans-serif"],
+        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
+      },
+      fontSize: {
+        "display-2xl": ["clamp(3.5rem, 9vw, 7.5rem)", { lineHeight: "0.95", letterSpacing: "-0.04em", fontWeight: "600" }],
+        "display-xl": ["clamp(2.75rem, 7vw, 5.5rem)", { lineHeight: "1.0", letterSpacing: "-0.035em", fontWeight: "600" }],
+        "display-lg": ["clamp(2.25rem, 5.5vw, 4rem)", { lineHeight: "1.05", letterSpacing: "-0.03em", fontWeight: "600" }],
+        "display-md": ["clamp(1.75rem, 4vw, 3rem)", { lineHeight: "1.1", letterSpacing: "-0.025em", fontWeight: "600" }],
+        "display-sm": ["clamp(1.5rem, 3vw, 2.25rem)", { lineHeight: "1.15", letterSpacing: "-0.02em", fontWeight: "600" }],
+      },
+      borderRadius: {
+        "4xl": "2rem",
+        "5xl": "2.5rem",
+      },
+      backgroundImage: {
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "grid-faint": "linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px)",
+        "noise": "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E\")",
+      },
+      backgroundSize: {
+        "grid-lg": "60px 60px",
+        "grid-md": "32px 32px",
+      },
+      animation: {
+        "fade-in": "fadeIn 0.6s ease-out forwards",
+        "fade-up": "fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+        "shimmer": "shimmer 2.5s linear infinite",
+        "pulse-glow": "pulseGlow 3s ease-in-out infinite",
+        "float-slow": "float 8s ease-in-out infinite",
+        "float-medium": "float 6s ease-in-out infinite",
+        "spin-slow": "spin 18s linear infinite",
+        "gradient-x": "gradientX 8s ease infinite",
+        "marquee": "marquee 40s linear infinite",
+        "marquee-reverse": "marqueeReverse 40s linear infinite",
+        "blink": "blink 1.1s steps(2) infinite",
+        "orbit": "orbit 16s linear infinite",
+        "scan": "scan 4s ease-in-out infinite",
+        "ticker": "ticker 1.2s steps(20) infinite",
+        "wave": "wave 1.4s ease-in-out infinite",
+      },
+      keyframes: {
+        fadeIn: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        fadeUp: {
+          "0%": { opacity: "0", transform: "translateY(28px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+        pulseGlow: {
+          "0%, 100%": { opacity: "0.5", transform: "scale(1)" },
+          "50%": { opacity: "1", transform: "scale(1.05)" },
+        },
+        float: {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-12px)" },
+        },
+        gradientX: {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+        },
+        marquee: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+        marqueeReverse: {
+          "0%": { transform: "translateX(-50%)" },
+          "100%": { transform: "translateX(0)" },
+        },
+        blink: {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0" },
+        },
+        orbit: {
+          "0%": { transform: "rotate(0deg) translateX(80px) rotate(0deg)" },
+          "100%": { transform: "rotate(360deg) translateX(80px) rotate(-360deg)" },
+        },
+        scan: {
+          "0%, 100%": { transform: "translateY(0)", opacity: "0.5" },
+          "50%": { transform: "translateY(100%)", opacity: "1" },
+        },
+        ticker: {
+          "0%": { transform: "translateY(0)" },
+          "100%": { transform: "translateY(-100%)" },
+        },
+        wave: {
+          "0%, 100%": { transform: "scaleY(0.4)" },
+          "50%": { transform: "scaleY(1)" },
+        },
+      },
+      boxShadow: {
+        "glow-accent": "0 0 60px -10px rgba(79, 140, 255, 0.5)",
+        "glow-mint": "0 0 60px -10px rgba(0, 229, 168, 0.45)",
+        "inner-soft": "inset 0 1px 0 0 rgba(255, 255, 255, 0.06)",
+        "card-lift": "0 20px 60px -20px rgba(0, 0, 0, 0.6), 0 1px 0 rgba(255,255,255,0.04) inset",
+        "ambient": "0 30px 80px -30px rgba(79, 140, 255, 0.25)",
+      },
+      backdropBlur: {
+        xs: "2px",
+      },
+      transitionTimingFunction: {
+        "spring-smooth": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "spring-soft": "cubic-bezier(0.22, 1, 0.36, 1)",
+      },
+    },
+  },
+  plugins: [],
+};
+
+export default config;
