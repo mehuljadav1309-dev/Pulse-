@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mic, MicOff, Activity, AlertTriangle, Heart, Thermometer, Droplet, Wind } from "lucide-react";
 import { FadeUp } from "@/components/ui/Reveal";
+import { RequireAuth } from "@/components/ui/RequireAuth";
 import { cn } from "@/lib/utils";
 
 const VITAL_SIGNS = [
@@ -73,7 +74,12 @@ export function VivaSimulator() {
           </p>
         </FadeUp>
 
-        <div className="mt-20 grid items-stretch gap-6 lg:grid-cols-[1fr_1.3fr]">
+        <RequireAuth
+          title="Sign in to enter the viva simulator"
+          description="Voice-based clinical case discussions. The AI examiner plays a senior consultant, evaluates your answers, and scores you on clinical reasoning."
+          cta="Sign in to start practicing"
+        >
+          <div className="mt-20 grid items-stretch gap-6 lg:grid-cols-[1fr_1.3fr]">
           {/* Case panel */}
           <FadeUp delay={0.1}>
             <div className="glass-strong flex h-full flex-col gap-4 rounded-3xl p-5">
@@ -280,7 +286,8 @@ export function VivaSimulator() {
               </div>
             </div>
           </FadeUp>
-        </div>
+          </div>
+        </RequireAuth>
       </div>
     </section>
   );

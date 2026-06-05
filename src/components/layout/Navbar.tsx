@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
 import { NAV_ITEMS } from "@/lib/constants";
 
@@ -63,16 +64,34 @@ export function Navbar() {
           </nav>
 
           <div className="hidden items-center gap-2 md:flex">
-            <a
-              href="#login"
-              className="rounded-full px-4 py-2 text-sm text-white/70 transition-colors hover:text-white"
-              data-cursor="hover"
-            >
-              Sign in
-            </a>
-            <a href="#cta" className="btn-primary" data-cursor="hover">
-              Start free
-            </a>
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button
+                  type="button"
+                  className="rounded-full px-4 py-2 text-sm text-white/70 transition-colors hover:text-white"
+                  data-cursor="hover"
+                >
+                  Sign in
+                </button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button type="button" className="btn-primary" data-cursor="hover">
+                  Start free
+                </button>
+              </SignUpButton>
+            </SignedOut>
+            <SignedIn>
+              <div className="ml-1 flex items-center">
+                <UserButton
+                  afterSignOutUrl="/"
+                  appearance={{
+                    elements: {
+                      avatarBox: "h-9 w-9 ring-1 ring-white/10",
+                    },
+                  }}
+                />
+              </div>
+            </SignedIn>
           </div>
 
           <button
@@ -108,15 +127,32 @@ export function Navbar() {
                 </a>
               ))}
               <div className="mt-2 grid grid-cols-2 gap-2 border-t border-white/5 pt-2">
-                <a
-                  href="#login"
-                  className="rounded-xl bg-white/5 py-2.5 text-center text-sm text-white/80"
-                >
-                  Sign in
-                </a>
-                <a href="#cta" className="btn-primary text-sm">
-                  Start free
-                </a>
+                <SignedOut>
+                  <SignInButton mode="modal">
+                    <button
+                      type="button"
+                      className="rounded-xl bg-white/5 py-2.5 text-center text-sm text-white/80"
+                    >
+                      Sign in
+                    </button>
+                  </SignInButton>
+                  <SignUpButton mode="modal">
+                    <button type="button" className="btn-primary text-sm">
+                      Start free
+                    </button>
+                  </SignUpButton>
+                </SignedOut>
+                <SignedIn>
+                  <div className="col-span-2 flex items-center justify-between rounded-xl bg-white/5 px-3 py-2">
+                    <span className="text-sm text-white/80">Account</span>
+                    <UserButton
+                      afterSignOutUrl="/"
+                      appearance={{
+                        elements: { avatarBox: "h-8 w-8 ring-1 ring-white/10" },
+                      }}
+                    />
+                  </div>
+                </SignedIn>
               </div>
             </div>
           </motion.div>

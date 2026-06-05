@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mic, Send, Sparkles, BookOpen, Brain, GraduationCap, Search, Volume2 } from "lucide-react";
 import { FadeUp } from "@/components/ui/Reveal";
+import { RequireAuth } from "@/components/ui/RequireAuth";
 import { cn } from "@/lib/utils";
 
 const CONVERSATION = [
@@ -140,8 +141,13 @@ export function AITutor() {
           </FadeUp>
 
           {/* Chat panel */}
-          <FadeUp delay={0.2}>
-            <div className="relative">
+          <RequireAuth
+            title="Sign in to chat with your AI tutor"
+            description="Ask anything from renal physiology to surgical procedures. Pulse Tutor replies with textbook citations, clinical reasoning, and exam-ready answers."
+            cta="Sign in to start learning"
+          >
+            <FadeUp delay={0.2}>
+              <div className="relative">
               {/* Glow */}
               <div className="absolute -inset-4 -z-10 rounded-3xl bg-gradient-to-br from-accent/20 via-mint/10 to-transparent opacity-60 blur-2xl" />
 
@@ -335,8 +341,9 @@ export function AITutor() {
                   </span>
                 </div>
               </motion.div>
-            </div>
-          </FadeUp>
+              </div>
+            </FadeUp>
+          </RequireAuth>
         </div>
       </div>
     </section>

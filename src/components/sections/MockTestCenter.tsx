@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { ArrowUp, ArrowDown, Target, TrendingUp, Trophy, Clock, Zap, CheckCircle2, AlertCircle } from "lucide-react";
 import { FadeUp } from "@/components/ui/Reveal";
+import { RequireAuth } from "@/components/ui/RequireAuth";
 import { cn } from "@/lib/utils";
 
 const TREND = [42, 51, 48, 58, 62, 67, 71, 78, 76, 82, 85, 88, 91, 89, 94];
@@ -155,7 +156,12 @@ export function MockTestCenter() {
         </FadeUp>
 
         <FadeUp delay={0.2} className="mt-20">
-          <div className="relative mx-auto max-w-6xl">
+          <RequireAuth
+            title="Sign in to track your mock test performance"
+            description="Get AIR predictions, percentile tracking, time-per-question analysis, and a personalized revision plan after every grand test."
+            cta="Sign in to start testing"
+          >
+            <div className="relative mx-auto max-w-6xl">
             {/* Glow */}
             <div className="absolute -inset-4 -z-10 rounded-3xl bg-gradient-to-br from-accent/15 via-success/10 to-mint/15 opacity-50 blur-3xl" />
 
@@ -363,6 +369,7 @@ export function MockTestCenter() {
               ))}
             </div>
           </div>
+          </RequireAuth>
         </FadeUp>
       </div>
     </section>

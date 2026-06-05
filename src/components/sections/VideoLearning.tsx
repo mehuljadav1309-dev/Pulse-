@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { Play, Clock, BookOpen, Heart, Brain, Stethoscope } from "lucide-react";
 import { FadeUp } from "@/components/ui/Reveal";
+import { RequireAuth } from "@/components/ui/RequireAuth";
 
 const VideoScene = dynamic(
   () => import("@/components/three/VideoScene").then((m) => m.VideoScene),
@@ -48,7 +49,12 @@ export function VideoLearning() {
           </p>
         </FadeUp>
 
-        <div className="relative mt-20 grid items-center gap-12 lg:grid-cols-[1.1fr_1fr]">
+        <RequireAuth
+          title="Sign in to watch surgical walkthroughs"
+          description="1,200+ high-yield lectures filmed in 4K with real cadaveric specimens and AI-generated annotations."
+          cta="Sign in to start watching"
+        >
+          <div className="relative mt-20 grid items-center gap-12 lg:grid-cols-[1.1fr_1fr]">
           {/* 3D Laptop */}
           <div className="relative aspect-[5/4] w-full" style={{ perspective: "1600px" }}>
             <motion.div
@@ -176,7 +182,8 @@ export function VideoLearning() {
               </div>
             </FadeUp>
           </div>
-        </div>
+          </div>
+        </RequireAuth>
       </div>
 
       <style jsx>{`

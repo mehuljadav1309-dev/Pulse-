@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bookmark, Check, ChevronRight, Filter, Search, Sparkles, Star, TrendingUp } from "lucide-react";
 import { FadeUp } from "@/components/ui/Reveal";
+import { RequireAuth } from "@/components/ui/RequireAuth";
 import { SUBJECTS } from "@/lib/constants";
 import { cn, formatNumber } from "@/lib/utils";
 
@@ -57,7 +58,12 @@ export function QuestionBank() {
         </FadeUp>
 
         <FadeUp delay={0.2} className="mt-20">
-          <div className="relative mx-auto max-w-6xl rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-2 shadow-card-lift md:p-3">
+          <RequireAuth
+            title="Sign in to access the question bank"
+            description="25,000+ MCQs across 19 subjects, with PYQs, image-based questions, AI explanations, and a revision engine tuned for NEET PG precision."
+            cta="Sign in to practice"
+          >
+            <div className="relative mx-auto max-w-6xl rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-2 shadow-card-lift md:p-3">
             {/* Window chrome */}
             <div className="flex items-center justify-between rounded-t-2xl bg-white/[0.02] px-4 py-3">
               <div className="flex items-center gap-1.5">
@@ -305,6 +311,7 @@ export function QuestionBank() {
               </div>
             ))}
           </div>
+          </RequireAuth>
         </FadeUp>
       </div>
     </section>

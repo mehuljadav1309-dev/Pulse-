@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Inter_Tight } from "next/font/google";
 import Script from "next/script";
+import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import { Providers } from "./providers";
 import { CustomCursor } from "@/components/ui/CustomCursor";
@@ -119,16 +120,18 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <Providers>
-          <LoadingScreen />
-          <CustomCursor />
-          <NoiseOverlay />
-          <Navbar />
-          <main id="main" className="relative">
-            {children}
-          </main>
-          <Footer />
-        </Providers>
+        <ClerkProvider>
+          <Providers>
+            <LoadingScreen />
+            <CustomCursor />
+            <NoiseOverlay />
+            <Navbar />
+            <main id="main" className="relative">
+              {children}
+            </main>
+            <Footer />
+          </Providers>
+        </ClerkProvider>
       </body>
     </html>
   );
