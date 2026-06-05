@@ -69,19 +69,28 @@ npm start
 
 ## Deploy
 
-### Vercel
-```bash
-vercel --prod
-```
+GitHub Pages is **not supported** — Clerk's auth uses Server Actions which require a Node.js runtime. Use any Node-capable host (Vercel recommended).
+
+### Vercel (recommended — one-click)
+
+1. Go to [vercel.com/new](https://vercel.com/new) and import `mehuljadav1309-dev/Pulse-`.
+2. Add the two env vars from `.env.local.example` (Project Settings → Environment Variables):
+   - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+   - `CLERK_SECRET_KEY`
+3. Click **Deploy**. Vercel auto-detects Next.js; no extra config needed (`vercel.json` is already in the repo).
+
+Subsequent deploys are automatic on every push to `main`.
 
 ### Netlify
 Build command: `npm run build`
-Publish directory: `.next`
+Publish directory: leave empty (Netlify auto-detects Next.js)
+Add the same two env vars in Site settings → Environment.
 
-### Self-hosted
+### Self-hosted (Node 18+)
 ```bash
+npm ci
 npm run build
-npm start
+CLERK_SECRET_KEY=... NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=... npm start
 ```
 
 ## License
