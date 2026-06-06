@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { LayoutDashboard, Menu, X } from "lucide-react";
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
 import { NAV_ITEMS } from "@/lib/constants";
@@ -64,6 +64,16 @@ export function Navbar() {
           </nav>
 
           <div className="hidden items-center gap-2 md:flex">
+            <SignedIn>
+              <Link
+                href="/dashboard"
+                className="flex items-center gap-1.5 rounded-full bg-white/5 px-3.5 py-1.5 text-sm text-white/80 transition hover:bg-white/10 hover:text-white"
+                data-cursor="hover"
+              >
+                <LayoutDashboard size={13} />
+                Dashboard
+              </Link>
+            </SignedIn>
             <SignedOut>
               <SignInButton mode="modal">
                 <button
@@ -127,6 +137,16 @@ export function Navbar() {
                 </a>
               ))}
               <div className="mt-2 grid grid-cols-2 gap-2 border-t border-white/5 pt-2">
+                <SignedIn>
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setOpen(false)}
+                    className="col-span-2 flex items-center justify-center gap-1.5 rounded-xl bg-white/5 py-2.5 text-sm text-white/85"
+                  >
+                    <LayoutDashboard size={14} />
+                    Go to dashboard
+                  </Link>
+                </SignedIn>
                 <SignedOut>
                   <SignInButton mode="modal">
                     <button

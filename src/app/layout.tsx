@@ -6,9 +6,6 @@ import "./globals.css";
 import { Providers } from "./providers";
 import { CustomCursor } from "@/components/ui/CustomCursor";
 import { NoiseOverlay } from "@/components/ui/NoiseOverlay";
-import { LoadingScreen } from "@/components/ui/LoadingScreen";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
 import { SITE } from "@/lib/constants";
 
 const inter = Inter({
@@ -122,14 +119,9 @@ export default function RootLayout({
         </a>
         <ClerkProvider>
           <Providers>
-            <LoadingScreen />
             <CustomCursor />
             <NoiseOverlay />
-            <Navbar />
-            <main id="main" className="relative">
-              {children}
-            </main>
-            <Footer />
+            {children}
           </Providers>
         </ClerkProvider>
       </body>
