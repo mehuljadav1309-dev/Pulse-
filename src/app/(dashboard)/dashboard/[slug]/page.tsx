@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import {
   ArrowRight,
   CheckCircle2,
@@ -73,6 +73,9 @@ const RECOMMENDED_VIDEOS = [
 ];
 
 export default function FeaturePage({ params }: { params: { slug: string } }) {
+  if (params.slug === "question-bank") {
+    redirect("/dashboard/question-bank");
+  }
   const feature = getFeatureBySlug(params.slug);
   if (!feature) notFound();
 

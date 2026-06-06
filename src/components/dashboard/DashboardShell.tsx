@@ -15,7 +15,8 @@ import {
   type LucideIcon,
   Sparkles,
 } from "lucide-react";
-import { SignedIn, UserButton } from "@clerk/nextjs";
+import { SignedIn, UserButton, useUser } from "@clerk/nextjs";
+import { Shield } from "lucide-react";
 import { DASHBOARD_FEATURES, type FeatureGroup } from "@/lib/features";
 import { cn } from "@/lib/utils";
 import { getFeatureIcon } from "./featureIcons";
@@ -182,6 +183,10 @@ function SidebarContent({
   pathname: string;
   onNavigate: () => void;
 }) {
+  const { user } = useUser();
+  const email = user?.emailAddresses?.[0]?.emailAddress?.toLowerCase() ?? "";
+  const ADMIN_EMAIL = (process.env.NEXT_PUBLIC_ADMIN_EMAIL ?? "prayag7827@gmail.com").toLowerCase();
+  const isAdmin = email === ADMIN_EMAIL;
   return (
     <div className="flex h-full flex-col">
       <Link
@@ -251,6 +256,15 @@ function SidebarContent({
       </nav>
 
       <div className="border-t border-white/5 p-3">
+        {isAdmin && (
+          <Link
+            href="/admin"
+            onClick={onNavigate}
+            className="mb-3 flex items-center gap-2 rounded-xl border border-accent/30 bg-accent/10 px-3 py-2 text-xs font-medium text-accent transition hover:border-accent/50 hover:bg-accent/15"
+          >
+            <Shield size={13} /> Admin panel
+          </Link>
+        )}
         <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-accent/15 via-mint/5 to-transparent p-4">
           <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-accent">
             Pro tip

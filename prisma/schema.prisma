@@ -1,0 +1,109 @@
+// Pulse — Prisma schema
+// Local dev: SQLite (DATABASE_URL="file:./dev.db")
+// Production (Vercel): swap provider to "postgresql" and point DATABASE_URL
+// to Neon/Supabase/Railway.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique
+  email     String   @unique
+  name      String?
+  isAdmin   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  progress UserProgress[]
+  uploads  UploadLog[]
+}
+
+model Subject {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  shortName   String?
+  description String?
+  color       String   @default("#4F46E5")
+  order       Int      @default(0)
+  icon        String   @default("BookOpen")
+  createdAt   DateTime @default(now())
+
+  topics Topic[]
+}
+
+model Topic {
+  id          String   @id @default(cuid())
+  slug        String
+  name        String
+  description String?
+  order       Int      @default(0)
+  subjectId   String
+  createdAt   DateTime @default(now())
+
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  mcqs    MCQ[]
+
+  @@unique([subjectId, slug])
+  @@index([subjectId])
+}
+
+model MCQ {
+  id            String   @id @default(cuid())
+  topicId       String
+  question      String
+  options       String
+  correctIndex  Int
+  explanation   String?
+  difficulty    String   @default("medium")
+  source        String?
+  status        String   @default("published")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  topic     Topic          @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  progress  UserProgress[]
+
+  @@index([topicId])
+  @@index([status])
+}
+
+model UserProgress {
+  id          String   @id @default(cuid())
+  userId      String
+  mcqId       String
+  isCorrect   Boolean
+  selectedIdx Int
+  attempts    Int      @default(1)
+  lastAttempt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mcq  MCQ  @relation(fields: [mcqId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, mcqId])
+  @@index([userId])
+}
+
+model UploadLog {
+  id           String   @id @default(cuid())
+  userId       String?
+  filename     String
+  fileType     String
+  subjectSlug  String?
+  topicSlug    String?
+  mcqsParsed   Int      @default(0)
+  mcqsSaved    Int      @default(0)
+  status       String   @default("pending")
+  errorMessage String?
+  createdAt    DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+}
