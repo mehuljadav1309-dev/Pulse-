@@ -1,14 +1,14 @@
 // Pulse — Prisma schema
 // Local dev: SQLite (DATABASE_URL="file:./dev.db")
-// Production (Vercel): swap provider to "postgresql" and point DATABASE_URL
-// to Neon/Supabase/Railway.
+// Production (Vercel): same schema works with Neon Postgres — just set
+// DATABASE_URL to the Postgres connection string.
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

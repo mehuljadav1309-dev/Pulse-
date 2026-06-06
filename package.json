@@ -8,11 +8,13 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "db:push": "prisma db push",
+    "db:push": "prisma db push --accept-data-loss",
     "db:generate": "prisma generate",
     "db:seed": "tsx prisma/seed.ts",
+    "db:seed:mcqs": "tsx prisma/seed-mcqs.ts",
     "db:studio": "prisma studio",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "vercel-build": "prisma generate && prisma db push --accept-data-loss --skip-generate && next build"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.39.5",
