@@ -16,6 +16,15 @@ export type UploadFormState = {
   duplicates?: number;
   topicSummary?: { subject: string; topic: string; count: number; createdTopic: boolean; createdSubject: boolean }[];
   subjectsDetected?: string[];
+  ai?: {
+    model: string;
+    usedFallback: boolean;
+    durationMs: number;
+    estimatedQuestionCount: number;
+    documentType: string;
+    confidence?: { question: number; answer: number; classification: number; overall: number };
+    needsReviewCount: number;
+  };
 };
 
 function slugify(s: string): string {
@@ -43,6 +52,8 @@ export async function uploadMCQFile(
   const topicId = String(formData.get("topicId") ?? "");
   const newTopicName = String(formData.get("newTopicName") ?? "").trim();
   const filenameOverride = String(formData.get("filename") ?? "").trim();
+  const useAI = formData.get("useAI") === "on" || formData.get("useAI") === "true";
+  const aiAlways = formData.get("aiAlways") === "on" || formData.get("aiAlways") === "true";
 
   if (!(file instanceof File) || file.size === 0) {
     return { status: "error", message: "Please choose a file." };
@@ -54,7 +65,11 @@ export async function uploadMCQFile(
   // for now — the same question rarely appears in two subjects).
   const existingHashes = await loadAllHashes();
 
-  const parsed = await parseFile(file, existingHashes);
+  const parsed = await parseFile(file, {
+    knownHashes: existingHashes,
+    aiFallback: useAI,
+    aiAlways,
+  });
   const uniqueMcqs = parsed.uniqueMcqs;
   const warnings: string[] = [...parsed.warnings];
 
@@ -310,6 +325,16 @@ export async function uploadMCQFile(
     warnings,
     topicSummary,
     subjectsDetected: Array.from(subjectsDetectedSet),
+    ai: parsed.ai
+      ? {
+          model: parsed.ai.model,
+          usedFallback: parsed.ai.usedFallback,
+          durationMs: parsed.ai.durationMs,
+          estimatedQuestionCount: parsed.ai.estimatedQuestionCount,
+          documentType: parsed.ai.documentType,
+          needsReviewCount: parsed.ai.questions.filter((q) => q.needsReview).length,
+        }
+      : undefined,
     message: `Inserted ${totalInserted} MCQ${totalInserted === 1 ? "" : "s"}${subjectNote} (${parsed.dedupe.duplicates} duplicate${parsed.dedupe.duplicates === 1 ? "" : "s"} skipped).`,
   };
 }

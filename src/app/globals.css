@@ -1772,6 +1772,170 @@ body:not(.dash-dark) .upload-alert__subjects {
   border: 1px solid rgba(79, 140, 255, 0.3);
   color: #b9cdff;
 }
+
+/* AI extraction toggle */
+.upload-form__ai {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: 10px;
+  background: rgba(139, 92, 246, 0.08);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+}
+body:not(.dash-dark) .upload-form__ai {
+  background: rgba(139, 92, 246, 0.06);
+  border-color: rgba(139, 92, 246, 0.22);
+}
+.upload-form__ai-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+}
+body:not(.dash-dark) .upload-form__ai-toggle {
+  color: #0c0e16;
+}
+.upload-form__ai-toggle input[type="checkbox"] {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+}
+.upload-form__ai-toggle input[type="checkbox"]:checked {
+  background: linear-gradient(180deg, #8b5cf6, #7c3aed);
+  border-color: rgba(139, 92, 246, 0.6);
+}
+.upload-form__ai-toggle input[type="checkbox"]:checked::after {
+  content: "✓";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+}
+body:not(.dash-dark) .upload-form__ai-toggle input[type="checkbox"] {
+  border-color: rgba(0, 0, 0, 0.25);
+  background: #fff;
+}
+.upload-form__ai-toggle > svg {
+  color: #c4b5fd;
+  flex-shrink: 0;
+}
+.upload-form__ai-toggle strong {
+  color: #c4b5fd;
+}
+body:not(.dash-dark) .upload-form__ai-toggle > svg {
+  color: #7c3aed;
+}
+body:not(.dash-dark) .upload-form__ai-toggle strong {
+  color: #7c3aed;
+}
+.upload-form__ai-toggle--sub {
+  margin-left: 24px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+}
+body:not(.dash-dark) .upload-form__ai-toggle--sub {
+  color: #5a6275;
+}
+.upload-form__ai-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-left: 24px;
+}
+body:not(.dash-dark) .upload-form__ai-meta {
+  color: #5a6275;
+}
+
+/* AI result panel in success alert */
+.upload-alert__ai {
+  margin-top: 0.7rem;
+  padding: 0.65rem 0.8rem;
+  border-radius: 8px;
+  background: rgba(139, 92, 246, 0.08);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  font-size: 12px;
+}
+body:not(.dash-dark) .upload-alert__ai {
+  background: rgba(139, 92, 246, 0.05);
+  border-color: rgba(139, 92, 246, 0.2);
+}
+.upload-alert__ai-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #c4b5fd;
+  font-weight: 600;
+}
+.upload-alert__ai-head > svg {
+  flex-shrink: 0;
+}
+body:not(.dash-dark) .upload-alert__ai-head {
+  color: #7c3aed;
+}
+.upload-alert__ai-model {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+}
+.upload-alert__ai-fb {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(245, 158, 11, 0.15);
+  color: #fcd34d;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  font-family: var(--font-display, system-ui);
+}
+.upload-alert__ai-meta {
+  margin-left: auto;
+  font-weight: 400;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+  font-family: var(--font-mono, monospace);
+}
+body:not(.dash-dark) .upload-alert__ai-meta {
+  color: #5a6275;
+}
+.upload-alert__ai-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.7);
+}
+body:not(.dash-dark) .upload-alert__ai-stats {
+  color: #5a6275;
+}
+.upload-alert__ai-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.upload-alert__ai-stat--warn {
+  color: #fcd34d;
+}
+body:not(.dash-dark) .upload-alert__ai-stat--warn {
+  color: #b45309;
+}
 .upload-alert {
   padding: 0.75rem 1rem;
   border-radius: 10px;

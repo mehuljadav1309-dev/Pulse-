@@ -2,7 +2,7 @@
 
 import { useFormState, useFormStatus } from "react-dom";
 import { useState } from "react";
-import { IconCloudUpload, IconFile, IconPlus, IconSparkles, IconX } from "@tabler/icons-react";
+import { IconCloudUpload, IconFile, IconPlus, IconSparkles, IconX, IconBrain, IconClock, IconAlertTriangle } from "@tabler/icons-react";
 import { uploadMCQFile, type UploadFormState } from "./actions";
 
 type Subject = { id: string; name: string; slug: string };
@@ -24,6 +24,8 @@ export function UploadForm({
   const [subjectId, setSubjectId] = useState<string>("");
   const [newTopic, setNewTopic] = useState<string>("");
   const [topicId, setTopicId] = useState<string>("");
+  const [useAI, setUseAI] = useState<boolean>(true);
+  const [aiAlways, setAiAlways] = useState<boolean>(false);
 
   const filteredTopics = topics.filter((t) => t.subjectId === subjectId);
   const usingNewTopic = newTopic.trim().length > 0;
@@ -122,6 +124,41 @@ export function UploadForm({
         infer the subject.
       </div>
 
+      <div className="upload-form__ai">
+        <label className="upload-form__ai-toggle">
+          <input
+            type="checkbox"
+            name="useAI"
+            checked={useAI}
+            onChange={(e) => setUseAI(e.target.checked)}
+          />
+          <IconBrain size={14} />
+          <span>
+            <strong>AI fallback</strong> — when the deterministic parser
+            can&apos;t extract enough MCQs, send the document to OpenRouter
+            (Qwen3-80B → Gemma-4 fallback).
+          </span>
+        </label>
+        {useAI && (
+          <label className="upload-form__ai-toggle upload-form__ai-toggle--sub">
+            <input
+              type="checkbox"
+              name="aiAlways"
+              checked={aiAlways}
+              onChange={(e) => setAiAlways(e.target.checked)}
+            />
+            <IconSparkles size={13} />
+            <span>Always run AI (skips the deterministic parser).</span>
+          </label>
+        )}
+        {useAI && (
+          <div className="upload-form__ai-meta">
+            <IconClock size={11} /> Adds 5–30 s depending on document size.
+            <IconAlertTriangle size={11} /> Sends the document text to OpenRouter.
+          </div>
+        )}
+      </div>
+
       <label
         className={
           "upload-drop" + (drag ? " upload-drop--drag" : "") + (file ? " upload-drop--has" : "")
@@ -186,6 +223,33 @@ export function UploadForm({
       {state.status === "success" && (
         <div className="upload-alert upload-alert--ok">
           <div className="upload-alert__title">{state.message}</div>
+          {state.ai && (
+            <div className="upload-alert__ai">
+              <div className="upload-alert__ai-head">
+                <IconBrain size={14} />
+                <span className="upload-alert__ai-model">
+                  {state.ai.model}
+                  {state.ai.usedFallback && (
+                    <span className="upload-alert__ai-fb">fallback</span>
+                  )}
+                </span>
+                <span className="upload-alert__ai-meta">
+                  {(state.ai.durationMs / 1000).toFixed(1)}s ·{" "}
+                  ~{state.ai.estimatedQuestionCount} est.
+                </span>
+              </div>
+              <div className="upload-alert__ai-stats">
+                <span className="upload-alert__ai-stat">
+                  Doc: {state.ai.documentType || "—"}
+                </span>
+                {state.ai.needsReviewCount > 0 && (
+                  <span className="upload-alert__ai-stat upload-alert__ai-stat--warn">
+                    <IconAlertTriangle size={11} /> {state.ai.needsReviewCount} flagged for review
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
           {(state.duplicates ?? 0) > 0 && (
             <div className="upload-alert__meta">
               Skipped {state.duplicates} duplicate
