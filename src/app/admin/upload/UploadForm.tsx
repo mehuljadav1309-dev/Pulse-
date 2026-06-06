@@ -2,7 +2,7 @@
 
 import { useFormState, useFormStatus } from "react-dom";
 import { useState } from "react";
-import { IconCloudUpload, IconFile, IconX } from "@tabler/icons-react";
+import { IconCloudUpload, IconFile, IconPlus, IconX } from "@tabler/icons-react";
 import { uploadMCQFile, type UploadFormState } from "./actions";
 
 type Subject = { id: string; name: string; slug: string };
@@ -22,8 +22,11 @@ export function UploadForm({
   const [file, setFile] = useState<File | null>(null);
   const [drag, setDrag] = useState(false);
   const [subjectId, setSubjectId] = useState<string>("");
+  const [newTopic, setNewTopic] = useState<string>("");
+  const [topicId, setTopicId] = useState<string>("");
 
   const filteredTopics = topics.filter((t) => t.subjectId === subjectId);
+  const usingNewTopic = newTopic.trim().length > 0;
 
   return (
     <form action={formAction} className="upload-form">
@@ -33,7 +36,11 @@ export function UploadForm({
           <select
             name="subjectId"
             value={subjectId}
-            onChange={(e) => setSubjectId(e.target.value)}
+            onChange={(e) => {
+              setSubjectId(e.target.value);
+              setTopicId("");
+              setNewTopic("");
+            }}
             className="upload-field__input"
             required
           >
@@ -45,16 +52,23 @@ export function UploadForm({
             ))}
           </select>
         </label>
+      </div>
+
+      <div className="upload-form__row">
         <label className="upload-field">
-          <span className="upload-field__label">Topic</span>
+          <span className="upload-field__label">
+            Existing topic
+            {usingNewTopic && <span className="upload-field__hint"> (ignored — using new topic below)</span>}
+          </span>
           <select
             name="topicId"
+            value={topicId}
+            onChange={(e) => setTopicId(e.target.value)}
             className="upload-field__input"
-            required
-            disabled={!subjectId}
+            disabled={!subjectId || usingNewTopic}
           >
             <option value="">
-              {subjectId ? "Choose a topic…" : "Pick a subject first"}
+              {subjectId ? "Choose an existing topic…" : "Pick a subject first"}
             </option>
             {filteredTopics.map((t) => (
               <option key={t.id} value={t.id}>
@@ -63,6 +77,33 @@ export function UploadForm({
             ))}
           </select>
         </label>
+        <label className="upload-field">
+          <span className="upload-field__label">
+            <IconPlus size={11} style={{ verticalAlign: -1, marginRight: 3 }} />
+            Or create a new topic
+          </span>
+          <input
+            type="text"
+            name="newTopicName"
+            value={newTopic}
+            onChange={(e) => setNewTopic(e.target.value)}
+            className="upload-field__input"
+            placeholder={
+              subjectId
+                ? "e.g. ECG interpretation, ACLS algorithms…"
+                : "Pick a subject first"
+            }
+            disabled={!subjectId}
+            maxLength={80}
+          />
+        </label>
+      </div>
+
+      <div className="upload-form__hint">
+        <strong>Tip:</strong> if your file contains a <code>topic</code> (JSON/CSV) or
+        <code> Topic:</code> / <code>Chapter:</code> lines (HTML/PDF), each MCQ will
+        be routed to its own topic automatically. Otherwise all MCQs will be saved
+        under the topic you pick or create here.
       </div>
 
       <label
@@ -128,7 +169,22 @@ export function UploadForm({
 
       {state.status === "success" && (
         <div className="upload-alert upload-alert--ok">
-          {state.message}
+          <div className="upload-alert__title">{state.message}</div>
+          {state.topicSummary && state.topicSummary.length > 0 && (
+            <div className="upload-alert__topics">
+              {state.topicSummary.map((t, i) => (
+                <span
+                  key={i}
+                  className={
+                    "upload-topic-chip" + (t.created ? " upload-topic-chip--new" : "")
+                  }
+                >
+                  {t.name} · {t.count}
+                  {t.created && <span className="upload-topic-chip__new">new</span>}
+                </span>
+              ))}
+            </div>
+          )}
           {state.warnings && state.warnings.length > 0 && (
             <details>
               <summary>{state.warnings.length} warning(s)</summary>

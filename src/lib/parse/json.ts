@@ -79,7 +79,12 @@ export function parseJSON(input: string | object): ParseResult {
     const difficulty = (["easy", "medium", "hard"] as const).find(
       (d) => d === (o.difficulty as string)
     );
-    mcqs.push({ question, options, correctIndex, explanation, difficulty });
+    const topic = o.topic
+      ? String(o.topic).trim()
+      : o.subject
+      ? String(o.subject).trim()
+      : undefined;
+    mcqs.push({ question, options, correctIndex, explanation, difficulty, topic });
   });
 
   return { mcqs, warnings, source: "json" };

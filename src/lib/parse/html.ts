@@ -40,6 +40,7 @@ const OPTION_LINE = /^\s*([A-H])[.)]\s*(.+?)\s*$/i;
 const ANSWER_LINE =
   /^\s*(?:Ans(?:wer)?|Correct\s*Ans(?:wer)?|Key)\s*[:\-=]?\s*(.+?)\s*$/i;
 const EXPLAIN_START = /^\s*(?:Exp(?:lanation)?|Reason|Rationale)\s*[:\-=]?\s*(.+?)\s*$/i;
+const TOPIC_LINE = /^\s*(?:Topic|Chapter|Section|Subject)\s*[:\-=]\s*(.+?)\s*$/i;
 
 export function extractMCQsFromText(
   text: string,
@@ -52,7 +53,14 @@ export function extractMCQsFromText(
 
   const mcqs: ParsedMCQ[] = [];
   let i = 0;
+  let currentTopic: string | undefined;
   while (i < lines.length) {
+    const tm = lines[i].match(TOPIC_LINE);
+    if (tm) {
+      currentTopic = tm[1].trim();
+      i++;
+      continue;
+    }
     const qm = lines[i].match(QUESTION_START);
     if (!qm) {
       i++;
@@ -62,6 +70,7 @@ export function extractMCQsFromText(
     const options: string[] = [];
     let correctIndex = -1;
     let explanation: string | undefined;
+    const topicAtStart = currentTopic;
     i++;
     while (i < lines.length) {
       const om = lines[i].match(OPTION_LINE);
@@ -85,11 +94,17 @@ export function extractMCQsFromText(
       if (em) {
         explanation = em[1];
         i++;
-        while (i < lines.length && !QUESTION_START.test(lines[i]) && !OPTION_LINE.test(lines[i])) {
+        while (i < lines.length && !QUESTION_START.test(lines[i]) && !OPTION_LINE.test(lines[i]) && !TOPIC_LINE.test(lines[i])) {
           explanation += " " + lines[i];
           i++;
         }
         if (explanation) explanation = explanation.trim();
+        continue;
+      }
+      const innerTopic = lines[i].match(TOPIC_LINE);
+      if (innerTopic) {
+        currentTopic = innerTopic[1].trim();
+        i++;
         continue;
       }
       if (QUESTION_START.test(lines[i])) break;
@@ -103,7 +118,7 @@ export function extractMCQsFromText(
       warnings.push(`Question "${question.slice(0, 40)}…": no answer found, defaulted to 0.`);
       correctIndex = 0;
     }
-    mcqs.push({ question, options, correctIndex, explanation });
+    mcqs.push({ question, options, correctIndex, explanation, topic: topicAtStart });
   }
   return mcqs;
 }

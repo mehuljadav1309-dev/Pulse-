@@ -59,7 +59,8 @@ export function parseCSV(input: string): ParseResult {
     const explanation = get("explanation", "explain", "rationale") || undefined;
     const diff = get("difficulty");
     const difficulty = (["easy", "medium", "hard"] as const).find((d) => d === diff);
-    mcqs.push({ question, options, correctIndex, explanation, difficulty });
+    const topic = get("topic", "subject", "chapter", "section") || undefined;
+    mcqs.push({ question, options, correctIndex, explanation, difficulty, topic });
   });
 
   return { mcqs, warnings, source: "csv" };

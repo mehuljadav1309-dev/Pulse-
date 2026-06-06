@@ -4,6 +4,7 @@ export type ParsedMCQ = {
   correctIndex: number;
   explanation?: string;
   difficulty?: "easy" | "medium" | "hard";
+  topic?: string;
 };
 
 export type ParseResult = {

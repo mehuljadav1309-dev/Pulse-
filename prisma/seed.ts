@@ -137,8 +137,8 @@ const SUBJECTS: SubjectSeed[] = [
   },
   {
     slug: "forensic-medicine",
-    name: "Forensic Medicine & Toxicology",
-    shortName: "Forensic",
+    name: "Forensic Medicine & Toxicology (FMT)",
+    shortName: "FMT",
     description: "Legal aspects of medicine, identification, trauma and toxicology.",
     color: "#64748B",
     icon: "Scale",
@@ -153,7 +153,7 @@ const SUBJECTS: SubjectSeed[] = [
   },
   {
     slug: "community-medicine",
-    name: "Community Medicine (PSM)",
+    name: "Community Medicine (PSM/SPM)",
     shortName: "PSM",
     description: "Preventive and social medicine, epidemiology, biostatistics and public health.",
     color: "#06B6D4",
@@ -208,7 +208,7 @@ const SUBJECTS: SubjectSeed[] = [
   },
   {
     slug: "obg",
-    name: "Obstetrics & Gynecology",
+    name: "Obstetrics & Gynaecology (OBG)",
     shortName: "OBG",
     description: "Pregnancy, childbirth, reproductive health and women's diseases.",
     color: "#F472B6",
@@ -270,7 +270,7 @@ const SUBJECTS: SubjectSeed[] = [
   },
   {
     slug: "ent",
-    name: "ENT (Otorhinolaryngology)",
+    name: "Otorhinolaryngology (ENT)",
     shortName: "ENT",
     description: "Ear, nose and throat diseases and surgery.",
     color: "#FBBF24",
@@ -285,8 +285,8 @@ const SUBJECTS: SubjectSeed[] = [
   },
   {
     slug: "dermatology",
-    name: "Dermatology & Venereology",
-    shortName: "Derma",
+    name: "Dermatology, Venereology & Leprosy (DVL)",
+    shortName: "DVL",
     description: "Skin, hair, nail disorders and STDs.",
     color: "#F87171",
     icon: "Sparkles",
@@ -316,8 +316,8 @@ const SUBJECTS: SubjectSeed[] = [
   },
   {
     slug: "anesthesiology",
-    name: "Anesthesiology",
-    shortName: "Anesth",
+    name: "Anaesthesiology",
+    shortName: "Anaesth",
     description: "Anesthesia, pain management and critical care.",
     color: "#4ADE80",
     icon: "Syringe",
@@ -331,7 +331,7 @@ const SUBJECTS: SubjectSeed[] = [
   },
   {
     slug: "radiology",
-    name: "Radiology",
+    name: "Radiodiagnosis (Radiology)",
     shortName: "Radio",
     description: "Imaging modalities: X-ray, CT, MRI, ultrasound and interventional.",
     color: "#38BDF8",
