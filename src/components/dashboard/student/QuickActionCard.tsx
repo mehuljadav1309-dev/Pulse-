@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, type LucideIcon } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type QuickActionCardProps = {
   href: string;
   label: string;
   description: string;
-  icon: LucideIcon;
+  icon: React.ReactNode;
   gradient: string;
   ringClass?: string;
   badge?: string;
@@ -22,7 +22,7 @@ export function QuickActionCard({
   href,
   label,
   description,
-  icon: Icon,
+  icon,
   gradient,
   ringClass,
   badge,
@@ -57,7 +57,7 @@ export function QuickActionCard({
             )}
             style={{ width: "3rem", height: "3rem", borderRadius: "1rem" }}
           >
-            <Icon size={18} />
+            {icon}
           </span>
           <div className="min-w-0 flex-1">
             <div className="flex items-center justify-between gap-2">

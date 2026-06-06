@@ -154,18 +154,18 @@ export default async function DashboardHome() {
         />
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {QUICK_ACTIONS.map((a, i) => (
-            <QuickActionCard
-              key={a.label}
-              href={a.href}
-              label={a.label}
-              description={a.description}
-              icon={a.icon}
-              gradient={a.gradient}
-              badge={a.badge}
-              progress={a.progress}
-              cta={a.cta}
-              index={i}
-            />
+              <QuickActionCard
+                key={a.label}
+                href={a.href}
+                label={a.label}
+                description={a.description}
+                icon={<a.icon size={18} />}
+                gradient={a.gradient}
+                badge={a.badge}
+                progress={a.progress}
+                cta={a.cta}
+                index={i}
+              />
           ))}
         </div>
       </section>
