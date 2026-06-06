@@ -73,7 +73,8 @@ export async function uploadMCQFile(
   const uniqueMcqs = parsed.uniqueMcqs;
   const warnings: string[] = [...parsed.warnings];
 
-  if (parsed.mcqs.length === 0) {
+  // --- Bail out cleanly if there's nothing to insert -------------------------
+  if (uniqueMcqs.length === 0) {
     await prisma.uploadLog.create({
       data: {
         userId: ctx.dbUserId,
@@ -81,15 +82,21 @@ export async function uploadMCQFile(
         fileType: parsed.source,
         subjectSlug: null,
         topicSlug: null,
-        mcqsParsed: 0,
+        mcqsParsed: parsed.mcqs.length,
         mcqsSaved: 0,
         status: "failed",
-        errorMessage: "No MCQs could be extracted.",
+        errorMessage: "No new MCQs to insert.",
       },
     });
+    const aiTried = !!(parsed.ai || useAI);
+    const hint = aiTried
+      ? "Both the deterministic parser and the AI extractor found no extractable MCQs. Check that the file contains a question bank (numbered questions with 2-6 options) and that the text is selectable, not a scanned image."
+      : "Enable the AI extractor (it's on by default) so the document is sent to OpenRouter for parsing.";
     return {
       status: "error",
-      message: "No MCQs could be extracted from the file.",
+      message: `No MCQs were extracted from "${filename}". ${hint}`,
+      parsed: parsed.mcqs.length,
+      duplicates: parsed.dedupe.duplicates,
       warnings,
     };
   }

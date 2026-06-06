@@ -11,63 +11,79 @@ export type { ParsedMCQ, ParseResult } from "./types";
 
 export type DedupeStats = { unique: number; duplicates: number };
 
-export type FullParseResult = ParseResult & {
+export type FullParseResult = {
+  /** All MCQs found (deterministic + AI), before dedup. */
+  mcqs: ParsedMCQ[];
+  /** MCQs that are not duplicates of each other or of pre-existing DB rows. */
   uniqueMcqs: ParsedMCQ[];
+  /** Hashes of dropped duplicates. */
   dedupe: DedupeStats;
+  warnings: string[];
+  source: ParseResult["source"];
+  /** Set when the AI extractor ran. */
   ai?: AIExtractResult;
 };
 
 export type ParseOptions = {
-  /** If true, run the AI extractor as a fallback when the deterministic
-   *  parser returns <3 MCQs. */
+  /** When true, run the AI extractor alongside the deterministic parser.
+   *  This is the recommended setting — the deterministic parser may miss
+   *  embedded JS arrays, while the AI extractor reads the whole document
+   *  holistically. Both results are merged and deduped. */
   aiFallback?: boolean;
-  /** If true, always run the AI extractor (skipped if disabled). */
+  /** When true, skip the deterministic parser entirely and rely on the AI
+   *  extractor alone. Useful for noisy / poorly-formatted PDFs. */
   aiAlways?: boolean;
-  /** Pre-loaded hash set for dedup. */
+  /** Pre-loaded hash set for cross-upload dedup. */
   knownHashes?: Set<string>;
 };
 
 /**
- * Parse a file and return deduped MCQs plus a parse report.
+ * Single entry point: parse a file (PDF / HTML / CSV / JSON) into MCQs.
  *
- * HTML parser is async (no real I/O today, but kept async for forward compat).
+ * Pipeline:
+ *   1. (unless aiAlways) Run the deterministic parser for the file type.
+ *   2. (when aiFallback or aiAlways) Run the AI extractor on the raw text.
+ *   3. Merge deterministic + AI results, dedup, and return.
+ *
+ * The AI extractor is the primary path — it handles noisy PDFs, scanned
+ * text, CEREB HTML, and ad-hoc formats that the deterministic parser
+ * can't crack. The deterministic parser is kept as a fast first pass so
+ * well-formatted files get instant results without paying the AI cost.
  */
 export async function parseFile(
-  file: File | { name: string; type: string; arrayBuffer: () => Promise<ArrayBuffer> },
+  file: File | { name: string; type: string; arrayBuffer: () => Promise<ArrayBuffer>; text?: () => Promise<string> },
   options: ParseOptions = {}
 ): Promise<FullParseResult> {
   const knownHashes = options.knownHashes ?? new Set();
   const name = (file.name ?? "").toLowerCase();
   const type = (file.type ?? "").toLowerCase();
+  const warnings: string[] = [];
 
-  let base: ParseResult;
-  if (name.endsWith(".json") || type.includes("json")) {
-    const text = typeof (file as File).text === "function" ? await (file as File).text() : "";
-    base = parseJSON(text);
-  } else if (name.endsWith(".csv") || type.includes("csv") || type.includes("spreadsheet")) {
-    const text = typeof (file as File).text === "function" ? await (file as File).text() : "";
-    base = parseCSV(text);
-  } else if (name.endsWith(".pdf") || type === "application/pdf" || type.includes("pdf")) {
-    const buf = Buffer.from(await file.arrayBuffer());
-    base = await parsePDF(buf, name);
-  } else if (name.endsWith(".html") || name.endsWith(".htm") || type.includes("html")) {
-    const text = typeof (file as File).text === "function" ? await (file as File).text() : "";
-    base = await parseHTML(text, name);
-  } else {
-    base = {
-      mcqs: [],
-      warnings: [`Unsupported file type: ${name || type || "unknown"}`],
-      source: "json",
-    };
+  // --- Step 1: deterministic parser (skipped if aiAlways) --------------------
+  let deterministic: ParseResult = { mcqs: [], warnings: [], source: "json" };
+  if (!options.aiAlways) {
+    if (name.endsWith(".json") || type.includes("json")) {
+      const text = typeof (file as File).text === "function" ? await (file as File).text() : "";
+      deterministic = parseJSON(text);
+    } else if (name.endsWith(".csv") || type.includes("csv") || type.includes("spreadsheet")) {
+      const text = typeof (file as File).text === "function" ? await (file as File).text() : "";
+      deterministic = parseCSV(text);
+    } else if (name.endsWith(".pdf") || type === "application/pdf" || type.includes("pdf")) {
+      const buf = Buffer.from(await file.arrayBuffer());
+      deterministic = await parsePDF(buf, name);
+    } else if (name.endsWith(".html") || name.endsWith(".htm") || type.includes("html")) {
+      const text = typeof (file as File).text === "function" ? await (file as File).text() : "";
+      deterministic = await parseHTML(text, name);
+    } else {
+      warnings.push(`Unsupported file type: ${name || type || "unknown"} — sending to AI as plain text.`);
+    }
+    warnings.push(...deterministic.warnings);
   }
 
-  const deterministic = dedupe(base, knownHashes);
-
-  // Optionally run the AI extractor
+  // --- Step 2: AI extractor (when enabled) -----------------------------------
   let ai: AIExtractResult | undefined;
-  const shouldRunAI =
-    options.aiAlways ||
-    (options.aiFallback && (deterministic.uniqueMcqs.length < 3 || deterministic.dedupe.duplicates > deterministic.uniqueMcqs.length));
+  const fromAI: ParsedMCQ[] = [];
+  const shouldRunAI = options.aiFallback || options.aiAlways;
   if (shouldRunAI) {
     try {
       const raw = await fileToText(file);
@@ -77,39 +93,40 @@ export async function parseFile(
           sourceFormat: ext,
           filename: name,
         });
-        // Convert AI questions to MCQs and merge
-        const fromAI: ParsedMCQ[] = [];
         for (const q of ai.questions) {
           const m = aiQuestionToMCQ(q, {});
-          if (m) {
-            // Preserve the question text exactly as the AI returned it
-            (m as any)._aiConfidence = q.overallConfidence ?? 0;
-            (m as any)._aiNeedsReview = q.needsReview ?? false;
-            (m as any)._aiTags = q.tags ?? [];
-            fromAI.push(m);
-          }
+          if (!m) continue;
+          (m as ParsedMCQ & { _aiConfidence?: number; _aiNeedsReview?: boolean; _aiTags?: string[] })._aiConfidence = q.overallConfidence ?? 0;
+          (m as ParsedMCQ & { _aiNeedsReview?: boolean })._aiNeedsReview = q.needsReview ?? false;
+          (m as ParsedMCQ & { _aiTags?: string[] })._aiTags = q.tags ?? [];
+          fromAI.push(m);
         }
-        // Combine, dedup, and re-stat
-        const merged: ParseResult = {
-          source: base.source,
-          warnings: [
-            ...base.warnings,
-            ...(fromAI.length > 0
-              ? [`AI extractor added ${fromAI.length} MCQs (model: ${ai.model}).`]
-              : []),
-          ],
-          mcqs: [...deterministic.uniqueMcqs, ...fromAI],
-        };
-        return dedupe(merged, knownHashes, ai);
+        if (fromAI.length > 0) {
+          warnings.push(
+            `AI extractor (${ai.model}${ai.usedFallback ? ", fallback" : ""}) added ${fromAI.length} MCQ${fromAI.length === 1 ? "" : "s"} in ${(ai.durationMs / 1000).toFixed(1)}s.`
+          );
+        } else {
+          warnings.push(
+            `AI extractor (${ai.model}) returned 0 MCQs — document may not contain any.`
+          );
+        }
+      } else {
+        warnings.push("AI extractor skipped: file produced no text.");
       }
     } catch (e) {
-      deterministic.warnings.push(
+      warnings.push(
         "AI extraction failed: " + (e instanceof Error ? e.message : String(e))
       );
     }
   }
 
-  return deterministic;
+  // --- Step 3: merge + dedup -------------------------------------------------
+  const allMcqs = [...deterministic.mcqs, ...fromAI];
+  return dedupe(
+    { mcqs: allMcqs, warnings, source: deterministic.source },
+    knownHashes,
+    ai
+  );
 }
 
 function dedupe(
@@ -130,9 +147,11 @@ function dedupe(
     unique.push(m);
   }
   return {
-    ...base,
+    mcqs: base.mcqs,
     uniqueMcqs: unique,
     dedupe: { unique: unique.length, duplicates },
+    warnings: base.warnings,
+    source: base.source,
     ai,
   };
 }
