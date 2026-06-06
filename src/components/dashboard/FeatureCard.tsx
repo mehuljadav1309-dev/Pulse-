@@ -133,19 +133,16 @@ export function FeatureHeader({
   const Icon = getFeatureIcon(feature.iconName);
   const s = status ?? feature.status;
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-6 md:p-8">
+    <div className="relative overflow-hidden rounded-3xl border border-soft-border bg-white p-6 shadow-soft-sm md:p-8">
       <div
-        className={cn(
-          "pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-gradient-radial opacity-60 blur-3xl",
-          feature.accent
-        )}
+        aria-hidden
+        className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-gradient-radial from-primary/20 to-transparent blur-3xl"
       />
       <div className="relative flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
         <div className="flex items-start gap-4">
           <span
             className={cn(
-              "grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/[0.04] text-white",
-              feature.ring,
+              "grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-soft-border bg-soft text-primary shadow-soft-xs",
               "ring-1"
             )}
           >
@@ -153,20 +150,20 @@ export function FeatureHeader({
           </span>
           <div>
             <div className="flex items-center gap-2">
-              <span className="label">{feature.group}</span>
+              <span className="eyebrow">{feature.group}</span>
               <span
                 className={cn(
                   "rounded-full border px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wider",
-                  STATUS_STYLE[s]
+                  STATUS_STYLE_LIGHT[s]
                 )}
               >
                 {STATUS_LABEL[s]}
               </span>
             </div>
-            <h1 className="mt-1 font-display text-2xl font-semibold tracking-tight text-white md:text-3xl">
+            <h1 className="mt-1 font-display text-2xl font-semibold tracking-tight text-ink md:text-3xl">
               {feature.title}
             </h1>
-            <p className="mt-1.5 max-w-2xl text-sm text-white/55">
+            <p className="mt-1.5 max-w-2xl text-sm text-ink-muted">
               {feature.description}
             </p>
           </div>
@@ -175,7 +172,7 @@ export function FeatureHeader({
           {feature.highlights.map((h) => (
             <li
               key={h}
-              className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] text-white/70"
+              className="rounded-full border border-soft-border bg-soft px-2.5 py-1 text-[11px] font-semibold text-ink-muted"
             >
               {h}
             </li>
@@ -185,3 +182,9 @@ export function FeatureHeader({
     </div>
   );
 }
+
+const STATUS_STYLE_LIGHT: Record<DashboardFeature["status"], string> = {
+  live: "bg-success/10 text-success border-success/30",
+  beta: "bg-warning-50 text-warning border-warning-300",
+  coming: "bg-soft text-ink-muted border-soft-border-strong",
+};

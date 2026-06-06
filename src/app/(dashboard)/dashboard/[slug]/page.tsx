@@ -128,7 +128,7 @@ function PanelShell({
 }) {
   return (
     <div
-      className={`rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-5 md:p-6 ${className}`}
+      className={`rounded-3xl border border-soft-border bg-white p-5 shadow-soft-sm md:p-6 ${className}`}
     >
       {children}
     </div>
@@ -139,14 +139,14 @@ function AiTutorPanel() {
   return (
     <div className="grid gap-4 lg:grid-cols-[1.3fr_1fr]">
       <PanelShell className="flex h-full flex-col">
-        <div className="flex items-center justify-between border-b border-white/8 pb-3">
+        <div className="flex items-center justify-between border-b border-soft-border pb-3">
           <div className="flex items-center gap-2.5">
-            <span className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-accent to-mint">
-              <Sparkles size={14} className="text-background" />
+            <span className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-primary to-cyan-500">
+              <Sparkles size={14} className="text-white" />
             </span>
             <div>
-              <div className="text-sm font-semibold text-white">Pulse Tutor</div>
-              <div className="text-[11px] text-mint">Online · Avg reply 1.2s</div>
+              <div className="text-sm font-semibold text-ink">Pulse Tutor</div>
+              <div className="text-[11px] text-success">Online · Avg reply 1.2s</div>
             </div>
           </div>
           <div className="hidden items-center gap-1.5 sm:flex">
@@ -154,7 +154,7 @@ function AiTutorPanel() {
               <span
                 key={m}
                 className={`rounded-md px-2 py-1 text-[11px] ${
-                  i === 0 ? "bg-accent/20 text-accent" : "text-white/45"
+                  i === 0 ? "bg-primary-50 text-primary" : "text-ink-soft"
                 }`}
               >
                 {m}
@@ -164,12 +164,12 @@ function AiTutorPanel() {
         </div>
         <div className="space-y-3 py-4">
           <div className="flex justify-end">
-            <div className="max-w-[85%] rounded-2xl rounded-tr-md bg-accent/15 px-4 py-2.5 text-sm text-white">
+            <div className="max-w-[85%] rounded-2xl rounded-tr-md bg-primary-50 px-4 py-2.5 text-sm text-ink">
               Why does H. pylori cause gastric ulcers?
             </div>
           </div>
           <div className="flex">
-            <div className="max-w-[88%] rounded-2xl rounded-tl-md border border-white/8 bg-white/[0.03] px-4 py-3 text-sm leading-relaxed text-white/90">
+            <div className="max-w-[88%] rounded-2xl rounded-tl-md border border-soft-border bg-soft px-4 py-3 text-sm leading-relaxed text-ink">
               H. pylori colonises the gastric mucosa and triggers a chronic
               neutrophilic inflammation. Urease activity raises local pH, while
               CagA and VacA toxins disrupt epithelial tight junctions — together
@@ -178,7 +178,7 @@ function AiTutorPanel() {
             </div>
           </div>
           <div className="flex">
-            <div className="max-w-[88%] rounded-2xl rounded-tl-md border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/90">
+            <div className="max-w-[88%] rounded-2xl rounded-tl-md border border-soft-border bg-soft px-4 py-3 text-sm text-ink">
               <ol className="space-y-1.5">
                 {[
                   "Urease → neutralises gastric acid locally",
@@ -187,7 +187,7 @@ function AiTutorPanel() {
                   "Chronic inflammation → atrophic gastritis → ulcer",
                 ].map((it, i) => (
                   <li key={i} className="flex gap-2.5">
-                    <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-md bg-accent/15 text-[10px] font-medium text-accent">
+                    <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-md bg-primary-50 text-[10px] font-medium text-primary">
                       {i + 1}
                     </span>
                     <span>{it}</span>
@@ -197,7 +197,7 @@ function AiTutorPanel() {
             </div>
           </div>
         </div>
-        <div className="mt-auto border-t border-white/8 pt-3">
+        <div className="mt-auto border-t border-soft-border pt-3">
           <div className="flex flex-wrap gap-1.5 pb-2">
             {[
               "Mechanism of insulin resistance",
@@ -206,22 +206,22 @@ function AiTutorPanel() {
             ].map((s) => (
               <button
                 key={s}
-                className="rounded-full border border-white/8 bg-white/[0.03] px-3 py-1 text-[11px] text-white/70 hover:border-accent/30 hover:bg-accent/10 hover:text-white"
+                className="rounded-full border border-soft-border bg-soft px-3 py-1 text-[11px] text-ink-muted hover:border-primary-200 hover:bg-primary-50 hover:text-ink"
               >
                 {s}
               </button>
             ))}
           </div>
-          <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-3 py-2">
-            <span className="grid h-8 w-8 place-items-center rounded-full bg-accent/15 text-accent">
+          <div className="flex items-center gap-2 rounded-2xl border border-soft-border-strong bg-soft px-3 py-2">
+            <span className="grid h-8 w-8 place-items-center rounded-full bg-primary-50 text-primary">
               <Mic size={14} />
             </span>
             <input
               type="text"
               placeholder="Ask Pulse anything medical..."
-              className="flex-1 bg-transparent text-sm text-white placeholder:text-white/30 focus:outline-none"
+              className="flex-1 bg-transparent text-sm text-ink placeholder:text-ink-faint focus:outline-none"
             />
-            <button className="grid h-8 w-8 place-items-center rounded-full bg-accent text-background">
+            <button className="grid h-8 w-8 place-items-center rounded-full bg-primary text-white">
               <ArrowRight size={13} />
             </button>
           </div>
@@ -229,7 +229,7 @@ function AiTutorPanel() {
       </PanelShell>
       <div className="space-y-4">
         <PanelShell>
-          <h3 className="font-display text-base font-semibold text-white">Modes</h3>
+          <h3 className="font-display text-base font-semibold text-ink">Modes</h3>
           <ul className="mt-3 space-y-2">
             {[
               ["Explain", "Textbook-grounded long-form answers"],
@@ -239,20 +239,20 @@ function AiTutorPanel() {
             ].map(([t, d]) => (
               <li
                 key={t}
-                className="flex items-start gap-2.5 rounded-lg border border-white/8 bg-white/[0.02] p-2.5"
+                className="flex items-start gap-2.5 rounded-lg border border-soft-border bg-soft/60 p-2.5"
               >
-                <Sparkles size={13} className="mt-0.5 text-accent" />
+                <Sparkles size={13} className="mt-0.5 text-primary" />
                 <div>
-                  <div className="text-sm font-medium text-white">{t}</div>
-                  <div className="text-xs text-white/50">{d}</div>
+                  <div className="text-sm font-medium text-ink">{t}</div>
+                  <div className="text-xs text-ink-soft">{d}</div>
                 </div>
               </li>
             ))}
           </ul>
         </PanelShell>
         <PanelShell>
-          <h3 className="font-display text-base font-semibold text-white">Citations</h3>
-          <p className="mt-1 text-xs text-white/50">
+          <h3 className="font-display text-base font-semibold text-ink">Citations</h3>
+          <p className="mt-1 text-xs text-ink-soft">
             Every answer is traceable to standard references.
           </p>
           <ul className="mt-3 flex flex-wrap gap-1.5">
@@ -260,7 +260,7 @@ function AiTutorPanel() {
               (c) => (
                 <li
                   key={c}
-                  className="rounded-md border border-white/8 bg-white/[0.02] px-2 py-1 text-[11px] text-white/65"
+                  className="rounded-md border border-soft-border bg-soft/60 px-2 py-1 text-[11px] text-ink-muted"
                 >
                   📚 {c}
                 </li>
@@ -277,41 +277,41 @@ function VivaPanel() {
   return (
     <div className="grid gap-4 lg:grid-cols-[1fr_1.3fr]">
       <PanelShell>
-        <div className="flex items-center justify-between text-[11px] text-white/50">
+        <div className="flex items-center justify-between text-[11px] text-ink-soft">
           <span className="flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-danger" />
             Case 14 · LIVE
           </span>
           <span className="chip text-[10px]">Medicine</span>
         </div>
-        <h3 className="mt-2 font-display text-lg font-semibold text-white">
+        <h3 className="mt-2 font-display text-lg font-semibold text-ink">
           Mr. Sharma, 58 / M
         </h3>
-        <p className="mt-1 text-xs text-white/55">
+        <p className="mt-1 text-xs text-ink-muted">
           Presented to ED · 3 days fever, productive cough, breathlessness.
         </p>
         <div className="mt-4 grid grid-cols-2 gap-2">
           {[
-            ["HR", "98 bpm", "text-danger"],
-            ["RR", "22 /min", "text-accent"],
+            ["HR", "98 bpm", "bg-danger"],
+            ["RR", "22 /min", "text-primary"],
             ["BP", "94/62", "text-warning"],
-            ["SpO₂", "94%", "text-mint"],
+            ["SpO₂", "94%", "text-success"],
           ].map(([k, v, c]) => (
             <div
               key={k}
-              className="rounded-lg border border-white/8 bg-white/[0.02] p-2.5"
+              className="rounded-lg border border-soft-border bg-soft/60 p-2.5"
             >
-              <div className="text-[10px] uppercase tracking-wider text-white/40">
+              <div className="text-[10px] uppercase tracking-wider text-ink-soft">
                 {k}
               </div>
-              <div className={`mt-0.5 font-mono text-sm ${c ?? "text-white"}`}>
+              <div className={`mt-0.5 font-mono text-sm ${c ?? "text-ink"}`}>
                 {v}
               </div>
             </div>
           ))}
         </div>
-        <div className="mt-4 rounded-lg border border-accent/20 bg-accent/5 p-3 text-xs text-white/70">
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-accent">
+        <div className="mt-4 rounded-lg border border-primary-200 bg-primary-50 p-3 text-xs text-ink-muted">
+          <div className="text-[10px] font-semibold uppercase tracking-wider text-primary">
             Examiner
           </div>
           <p className="mt-1">
@@ -322,11 +322,11 @@ function VivaPanel() {
       </PanelShell>
       <PanelShell>
         <div className="flex items-center justify-between">
-          <h3 className="font-display text-base font-semibold text-white">
+          <h3 className="font-display text-base font-semibold text-ink">
             Voice session
           </h3>
-          <span className="flex items-center gap-1.5 text-[11px] text-mint">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-mint" />
+          <span className="flex items-center gap-1.5 text-[11px] text-success">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-success" />
             Listening
           </span>
         </div>
@@ -334,7 +334,7 @@ function VivaPanel() {
           {Array.from({ length: 32 }).map((_, i) => (
             <span
               key={i}
-              className="block w-1 origin-bottom rounded-full bg-gradient-to-t from-accent to-mint"
+              className="block w-1 origin-bottom rounded-full bg-gradient-to-t from-primary to-cyan-500"
               style={{
                 height: `${20 + Math.abs(Math.sin(i * 0.5)) * 80}%`,
                 animation: `wave 1.1s ease-in-out ${i * 0.05}s infinite`,
@@ -343,10 +343,10 @@ function VivaPanel() {
           ))}
         </div>
         <div className="mt-4 flex items-center justify-center gap-3">
-          <button className="grid h-12 w-12 place-items-center rounded-full bg-accent text-background shadow-glow-accent">
+          <button className="grid h-12 w-12 place-items-center rounded-full bg-primary text-white shadow-primary-glow">
             <Mic size={18} />
           </button>
-          <button className="grid h-12 w-12 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-white/70">
+          <button className="grid h-12 w-12 place-items-center rounded-full border border-soft-border-strong bg-soft text-ink-muted">
             <Volume2 size={18} />
           </button>
         </div>
@@ -358,12 +358,12 @@ function VivaPanel() {
           ].map(([label, v]) => (
             <div
               key={label as string}
-              className="rounded-xl border border-white/8 bg-white/[0.02] p-3"
+              className="rounded-xl border border-soft-border bg-soft/60 p-3"
             >
-              <div className="text-[10px] uppercase tracking-wider text-white/40">
+              <div className="text-[10px] uppercase tracking-wider text-ink-soft">
                 {label}
               </div>
-              <div className="mt-1 font-display text-xl font-semibold text-white">
+              <div className="mt-1 font-display text-xl font-semibold text-ink">
                 {v}
               </div>
             </div>
@@ -387,7 +387,7 @@ function QuestionBankPanel() {
   return (
     <div className="grid gap-4 lg:grid-cols-[260px_1fr]">
       <PanelShell>
-        <div className="label mb-2 text-white/40">Subjects</div>
+        <div className="label mb-2 text-ink-soft">Subjects</div>
         <ul className="space-y-1">
           {[
             ["Anatomy", 2840, "#4F8CFF"],
@@ -402,7 +402,7 @@ function QuestionBankPanel() {
             <li
               key={n as string}
               className={`flex items-center justify-between rounded-lg px-2.5 py-1.5 text-sm ${
-                i === 0 ? "bg-white/[0.06] text-white" : "text-white/55"
+                i === 0 ? "bg-soft text-ink" : "text-ink-muted"
               }`}
             >
               <span className="flex items-center gap-2">
@@ -412,7 +412,7 @@ function QuestionBankPanel() {
                 />
                 {n}
               </span>
-              <span className="text-[11px] text-white/30">{c as number}</span>
+              <span className="text-[11px] text-ink-faint">{c as number}</span>
             </li>
           ))}
         </ul>
@@ -425,8 +425,8 @@ function QuestionBankPanel() {
                 key={f}
                 className={`rounded-full border px-2.5 py-1 text-[11px] font-medium ${
                   i === 0
-                    ? "border-accent/40 bg-accent/15 text-white"
-                    : "border-white/8 bg-white/[0.02] text-white/55"
+                    ? "border-primary-300 bg-primary-50 text-ink"
+                    : "border-soft-border bg-soft/60 text-ink-muted"
                 }`}
               >
                 {f}
@@ -434,8 +434,8 @@ function QuestionBankPanel() {
             )
           )}
         </div>
-        <div className="mt-4 flex items-center gap-2 text-[11px] text-white/40">
-          <span className="rounded-md bg-accent/15 px-1.5 py-0.5 text-accent">
+        <div className="mt-4 flex items-center gap-2 text-[11px] text-ink-soft">
+          <span className="rounded-md bg-primary-50 px-1.5 py-0.5 text-primary">
             Medicine
           </span>
           <span>· Heart Failure</span>
@@ -443,21 +443,21 @@ function QuestionBankPanel() {
           <span className="flex items-center gap-1">
             <Star size={11} className="text-warning" /> Moderate
           </span>
-          <span className="rounded-md bg-warning/15 px-1.5 py-0.5 text-warning">
+          <span className="rounded-md bg-warning-50 px-1.5 py-0.5 text-warning">
             PYQ
           </span>
         </div>
-        <h3 className="mt-4 text-base font-medium leading-relaxed text-white md:text-lg">
-          <span className="mr-2 text-white/40">Q1.</span>
+        <h3 className="mt-4 text-base font-medium leading-relaxed text-ink md:text-lg">
+          <span className="mr-2 text-ink-soft">Q1.</span>
           {SAMPLE.text}
         </h3>
         <div className="mt-4 grid gap-2">
           {SAMPLE.options.map((o) => (
             <button
               key={o.id}
-              className="flex items-center gap-3 rounded-xl border border-white/8 bg-white/[0.02] p-3 text-left text-sm text-white/85 transition hover:border-white/20 hover:bg-white/[0.04]"
+              className="flex items-center gap-3 rounded-xl border border-soft-border bg-soft/60 p-3 text-left text-sm text-ink-muted transition hover:border-soft-border-strong hover:bg-soft"
             >
-              <span className="grid h-7 w-7 place-items-center rounded-md border border-white/10 bg-white/[0.02] text-[11px] font-medium text-white/60">
+              <span className="grid h-7 w-7 place-items-center rounded-md border border-soft-border-strong bg-soft/60 text-[11px] font-medium text-ink-muted">
                 {o.id}
               </span>
               {o.text}
@@ -465,7 +465,7 @@ function QuestionBankPanel() {
           ))}
         </div>
         <div className="mt-5 flex items-center justify-between">
-          <button className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-white/60 hover:border-white/20">
+          <button className="rounded-lg border border-soft-border-strong px-3 py-1.5 text-xs text-ink-muted hover:border-soft-border-strong">
             Skip
           </button>
           <button className="btn-primary px-3.5 py-1.5 text-xs">
@@ -481,17 +481,17 @@ function VideosPanel() {
   return (
     <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
       <PanelShell>
-        <div className="relative aspect-video overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-danger/15 via-accent/10 to-mint/10">
+        <div className="relative aspect-video overflow-hidden rounded-2xl border border-soft-border-strong bg-gradient-to-br from-primary-50 via-secondary-50 to-cyan-50">
           <div className="absolute inset-0 grid place-items-center">
-            <button className="grid h-16 w-16 place-items-center rounded-full bg-white/95 text-background shadow-card-lift transition hover:scale-105">
+            <button className="grid h-16 w-16 place-items-center rounded-full bg-white text-white shadow-soft-md transition hover:scale-105">
               <Play size={22} fill="currentColor" />
             </button>
           </div>
           <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2">
-            <div className="h-1 flex-1 overflow-hidden rounded-full bg-white/15">
-              <div className="h-full w-1/3 rounded-full bg-gradient-to-r from-accent to-mint" />
+            <div className="h-1 flex-1 overflow-hidden rounded-full bg-soft">
+              <div className="h-full w-1/3 rounded-full bg-gradient-to-r from-primary to-cyan-500" />
             </div>
-            <span className="font-mono text-[11px] text-white/70">6:14 / 18:24</span>
+            <span className="font-mono text-[11px] text-ink-muted">6:14 / 18:24</span>
           </div>
           <div className="absolute left-3 top-3 chip text-[10px]">
             <span className="h-1.5 w-1.5 rounded-full bg-danger" /> LIVE-ANNOTATED
@@ -499,10 +499,10 @@ function VideosPanel() {
         </div>
         <div className="mt-4 flex items-center justify-between">
           <div>
-            <h3 className="font-display text-lg font-semibold text-white">
+            <h3 className="font-display text-lg font-semibold text-ink">
               Coronary circulation walkthrough
             </h3>
-            <p className="mt-1 text-xs text-white/55">
+            <p className="mt-1 text-xs text-ink-muted">
               Anatomy · Dr. Mehra · 18:24 · with AI annotations
             </p>
           </div>
@@ -512,27 +512,27 @@ function VideosPanel() {
         </div>
       </PanelShell>
       <PanelShell>
-        <h3 className="font-display text-base font-semibold text-white">
+        <h3 className="font-display text-base font-semibold text-ink">
           Recommended for you
         </h3>
         <ul className="mt-3 space-y-2">
           {RECOMMENDED_VIDEOS.map((v) => (
             <li
               key={v.title}
-              className="flex items-center gap-3 rounded-xl border border-white/8 bg-white/[0.02] p-2.5"
+              className="flex items-center gap-3 rounded-xl border border-soft-border bg-soft/60 p-2.5"
             >
-              <span className="grid h-10 w-10 place-items-center rounded-lg bg-white/[0.04] text-white/60">
+              <span className="grid h-10 w-10 place-items-center rounded-lg bg-soft text-ink-muted">
                 <Video size={15} />
               </span>
               <div className="min-w-0 flex-1">
-                <div className="truncate text-sm font-medium text-white">
+                <div className="truncate text-sm font-medium text-ink">
                   {v.title}
                 </div>
-                <div className="text-[11px] text-white/45">
+                <div className="text-[11px] text-ink-soft">
                   {v.subject} · {v.duration}
                 </div>
               </div>
-              <Play size={13} className="text-white/45" />
+              <Play size={13} className="text-ink-soft" />
             </li>
           ))}
         </ul>
@@ -545,7 +545,7 @@ function MockTestsPanel() {
   return (
     <div className="grid gap-4 lg:grid-cols-3">
       <PanelShell className="lg:col-span-2">
-        <h3 className="font-display text-base font-semibold text-white">
+        <h3 className="font-display text-base font-semibold text-ink">
           Available tests
         </h3>
         <ul className="mt-3 space-y-2">
@@ -557,24 +557,24 @@ function MockTestsPanel() {
           ].map(([t, meta, score, p], i) => (
             <li
               key={t as string}
-              className="flex items-center gap-3 rounded-xl border border-white/8 bg-white/[0.02] p-3"
+              className="flex items-center gap-3 rounded-xl border border-soft-border bg-soft/60 p-3"
             >
               <span
                 className={`grid h-9 w-9 place-items-center rounded-lg ${
-                  i === 3 ? "bg-warning/15 text-warning" : "bg-accent/15 text-accent"
+                  i === 3 ? "bg-warning-50 text-warning" : "bg-primary-50 text-primary"
                 }`}
               >
                 <Trophy size={15} />
               </span>
               <div className="flex-1">
-                <div className="text-sm font-medium text-white">{t}</div>
-                <div className="text-[11px] text-white/50">{meta}</div>
+                <div className="text-sm font-medium text-ink">{t}</div>
+                <div className="text-[11px] text-ink-soft">{meta}</div>
               </div>
               <div className="hidden text-right md:block">
-                <div className="font-mono text-sm text-white">{score}</div>
-                <div className="mt-1 h-1 w-24 overflow-hidden rounded-full bg-white/10">
+                <div className="font-mono text-sm text-ink">{score}</div>
+                <div className="mt-1 h-1 w-24 overflow-hidden rounded-full bg-soft">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-accent to-mint"
+                    className="h-full rounded-full bg-gradient-to-r from-primary to-cyan-500"
                     style={{ width: `${p}%` }}
                   />
                 </div>
@@ -587,7 +587,7 @@ function MockTestsPanel() {
         </ul>
       </PanelShell>
       <PanelShell>
-        <h3 className="font-display text-base font-semibold text-white">
+        <h3 className="font-display text-base font-semibold text-ink">
           Your rank
         </h3>
         <div className="mt-4 grid place-items-center">
@@ -613,25 +613,25 @@ function MockTestsPanel() {
               />
             </svg>
             <div className="text-center">
-              <div className="font-display text-3xl font-semibold text-white">
+              <div className="font-display text-3xl font-semibold text-ink">
                 AIR 412
               </div>
-              <div className="text-[11px] text-white/50">predicted</div>
+              <div className="text-[11px] text-ink-soft">predicted</div>
             </div>
           </div>
         </div>
         <ul className="mt-3 space-y-1.5 text-xs">
-          <li className="flex items-center justify-between text-white/65">
+          <li className="flex items-center justify-between text-ink-muted">
             <span>Accuracy</span>
-            <span className="text-white">78%</span>
+            <span className="text-ink">78%</span>
           </li>
-          <li className="flex items-center justify-between text-white/65">
+          <li className="flex items-center justify-between text-ink-muted">
             <span>Time / Q</span>
-            <span className="text-white">52s</span>
+            <span className="text-ink">52s</span>
           </li>
-          <li className="flex items-center justify-between text-white/65">
+          <li className="flex items-center justify-between text-ink-muted">
             <span>Streak</span>
-            <span className="text-mint">12 days</span>
+            <span className="text-success">12 days</span>
           </li>
         </ul>
       </PanelShell>
@@ -644,7 +644,7 @@ function NotesPanel() {
     <div className="grid gap-4 lg:grid-cols-[1fr_2fr]">
       <PanelShell>
         <div className="flex items-center justify-between">
-          <h3 className="font-display text-base font-semibold text-white">
+          <h3 className="font-display text-base font-semibold text-ink">
             My notes
           </h3>
           <button className="btn-primary px-3 py-1.5 text-xs">
@@ -655,10 +655,10 @@ function NotesPanel() {
           {NOTES.map((n) => (
             <li
               key={n.id}
-              className="cursor-pointer rounded-lg border border-white/8 bg-white/[0.02] p-2.5 hover:border-white/15"
+              className="cursor-pointer rounded-lg border border-soft-border bg-soft/60 p-2.5 hover:border-soft-border-strong"
             >
-              <div className="text-sm font-medium text-white">{n.title}</div>
-              <div className="mt-0.5 text-[11px] text-white/45">
+              <div className="text-sm font-medium text-ink">{n.title}</div>
+              <div className="mt-0.5 text-[11px] text-ink-soft">
                 {n.subject} · {n.updated}
               </div>
             </li>
@@ -668,10 +668,10 @@ function NotesPanel() {
       <PanelShell>
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-display text-base font-semibold text-white">
+            <h3 className="font-display text-base font-semibold text-ink">
               Heart failure — drug summary
             </h3>
-            <p className="mt-0.5 text-[11px] text-white/50">
+            <p className="mt-0.5 text-[11px] text-ink-soft">
               Medicine · last edited 2h ago
             </p>
           </div>
@@ -684,31 +684,31 @@ function NotesPanel() {
             </button>
           </div>
         </div>
-        <div className="mt-4 space-y-3 rounded-xl border border-white/8 bg-white/[0.01] p-4 text-sm leading-relaxed text-white/85">
+        <div className="mt-4 space-y-3 rounded-xl border border-soft-border bg-soft/40 p-4 text-sm leading-relaxed text-ink-muted">
           <p>
-            <strong className="text-white">Mortality-reducing drugs in HFrEF</strong>{" "}
+            <strong className="text-ink">Mortality-reducing drugs in HFrEF</strong>{" "}
             (EF ≤ 40%): the four pillars are ARNI/ACE-i, beta-blockers (evidence-based),
             MRA, and SGLT2 inhibitors.
           </p>
-          <ul className="list-disc space-y-1.5 pl-5 text-white/75">
+          <ul className="list-disc space-y-1.5 pl-5 text-ink-muted">
             <li>
-              <strong className="text-white">ARNI</strong> (sacubitril/valsartan) →
+              <strong className="text-ink">ARNI</strong> (sacubitril/valsartan) →
               PARADIGM-HF.
             </li>
             <li>
-              <strong className="text-white">Beta-blockers</strong>: carvedilol,
+              <strong className="text-ink">Beta-blockers</strong>: carvedilol,
               metoprolol succinate, bisoprolol.
             </li>
             <li>
-              <strong className="text-white">MRA</strong> (spironolactone, eplerenone)
+              <strong className="text-ink">MRA</strong> (spironolactone, eplerenone)
               → RALES, EMPHASIS-HF.
             </li>
             <li>
-              <strong className="text-white">SGLT2i</strong> (dapagliflozin, empagliflozin)
+              <strong className="text-ink">SGLT2i</strong> (dapagliflozin, empagliflozin)
               → DAPA-HF, EMPEROR-Reduced.
             </li>
           </ul>
-          <p className="text-white/75">
+          <p className="text-ink-muted">
             Symptom-relieving only: loop diuretics, digoxin (improves symptoms, not
             mortality), ivabradine (in a subset).
           </p>
@@ -722,18 +722,18 @@ function FlashcardsPanel() {
   return (
     <div className="grid gap-4 lg:grid-cols-[1.3fr_1fr]">
       <PanelShell className="flex flex-col items-center justify-center py-10">
-        <div className="text-[11px] uppercase tracking-wider text-white/40">
+        <div className="text-[11px] uppercase tracking-wider text-ink-soft">
           Card 4 of 18
         </div>
-        <div className="mt-4 grid aspect-[3/2] w-full max-w-md place-items-center rounded-2xl border border-white/15 bg-gradient-to-br from-accent/15 to-mint/10 p-6 text-center">
+        <div className="mt-4 grid aspect-[3/2] w-full max-w-md place-items-center rounded-2xl border border-soft-border-strong bg-gradient-to-br from-primary-50 to-cyan-50 p-6 text-center">
           <div>
-            <div className="text-[10px] uppercase tracking-wider text-accent">
+            <div className="text-[10px] uppercase tracking-wider text-primary">
               Triad
             </div>
-            <div className="mt-2 font-display text-2xl font-semibold text-white">
+            <div className="mt-2 font-display text-2xl font-semibold text-ink">
               Beck&apos;s triad
             </div>
-            <p className="mt-2 text-sm text-white/55">Tap to reveal</p>
+            <p className="mt-2 text-sm text-ink-muted">Tap to reveal</p>
           </div>
         </div>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
@@ -743,22 +743,22 @@ function FlashcardsPanel() {
           <button className="btn-ghost text-xs">Good</button>
           <button className="btn-ghost text-xs">Easy</button>
         </div>
-        <div className="mt-3 text-[11px] text-white/40">
+        <div className="mt-3 text-[11px] text-ink-soft">
           Next review in 2 hrs · 14 cards due today
         </div>
       </PanelShell>
       <PanelShell>
-        <h3 className="font-display text-base font-semibold text-white">
+        <h3 className="font-display text-base font-semibold text-ink">
           Today&apos;s deck
         </h3>
         <ul className="mt-3 space-y-1.5">
           {FLASHCARDS.map((c, i) => (
             <li
               key={i}
-              className="rounded-lg border border-white/8 bg-white/[0.02] p-2.5"
+              className="rounded-lg border border-soft-border bg-soft/60 p-2.5"
             >
-              <div className="text-sm font-medium text-white">{c.front}</div>
-              <div className="mt-0.5 text-[11px] text-white/50">{c.back}</div>
+              <div className="text-sm font-medium text-ink">{c.front}</div>
+              <div className="mt-0.5 text-[11px] text-ink-soft">{c.back}</div>
             </li>
           ))}
         </ul>
@@ -770,10 +770,10 @@ function FlashcardsPanel() {
 function PyqPanel() {
   return (
     <PanelShell>
-      <h3 className="font-display text-base font-semibold text-white">
+      <h3 className="font-display text-base font-semibold text-ink">
         Past papers
       </h3>
-      <p className="mt-1 text-xs text-white/55">
+      <p className="mt-1 text-xs text-ink-muted">
         20+ years of NEET PG, INI-CET and FMGE papers — fully solved.
       </p>
       <div className="mt-4 grid gap-2 md:grid-cols-2">
@@ -782,23 +782,23 @@ function PyqPanel() {
           return (
             <div
               key={p.year}
-              className="rounded-xl border border-white/8 bg-white/[0.02] p-3"
+              className="rounded-xl border border-soft-border bg-soft/60 p-3"
             >
               <div className="flex items-center justify-between">
-                <div className="text-sm font-medium text-white">{p.year}</div>
-                <span className="text-[11px] text-white/45">
+                <div className="text-sm font-medium text-ink">{p.year}</div>
+                <span className="text-[11px] text-ink-soft">
                   {p.solved}/{p.q} solved
                 </span>
               </div>
-              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/5">
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-soft">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-accent to-mint"
+                  className="h-full rounded-full bg-gradient-to-r from-primary to-cyan-500"
                   style={{ width: `${pct}%` }}
                 />
               </div>
-              <div className="mt-3 flex items-center justify-between text-[11px] text-white/50">
+              <div className="mt-3 flex items-center justify-between text-[11px] text-ink-soft">
                 <span>{pct}% complete</span>
-                <button className="text-accent hover:text-accent/80">
+                <button className="text-primary hover:text-primary/80">
                   Continue →
                 </button>
               </div>
@@ -814,35 +814,35 @@ function RankPredictorPanel() {
   return (
     <div className="grid gap-4 lg:grid-cols-[1fr_1.2fr]">
       <PanelShell>
-        <h3 className="font-display text-base font-semibold text-white">
+        <h3 className="font-display text-base font-semibold text-ink">
           Predict your rank
         </h3>
-        <p className="mt-1 text-xs text-white/55">
+        <p className="mt-1 text-xs text-ink-muted">
           Enter your mock score to get an AI-predicted AIR.
         </p>
         <div className="mt-5 space-y-3">
           <label className="block">
-            <span className="text-xs text-white/55">Exam</span>
-            <select className="mt-1 w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white focus:border-accent/40 focus:outline-none">
-              <option className="bg-background">NEET PG 2025</option>
-              <option className="bg-background">INI-CET 2025</option>
-              <option className="bg-background">FMGE 2025</option>
+            <span className="text-xs text-ink-muted">Exam</span>
+            <select className="mt-1 w-full rounded-lg border border-soft-border-strong bg-soft px-3 py-2 text-sm text-ink focus:border-primary-300 focus:outline-none">
+              <option className="bg-white">NEET PG 2025</option>
+              <option className="bg-white">INI-CET 2025</option>
+              <option className="bg-white">FMGE 2025</option>
             </select>
           </label>
           <label className="block">
-            <span className="text-xs text-white/55">Score (out of 800)</span>
+            <span className="text-xs text-ink-muted">Score (out of 800)</span>
             <input
               type="number"
               defaultValue={612}
-              className="mt-1 w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white focus:border-accent/40 focus:outline-none"
+              className="mt-1 w-full rounded-lg border border-soft-border-strong bg-soft px-3 py-2 text-sm text-ink focus:border-primary-300 focus:outline-none"
             />
           </label>
           <label className="block">
-            <span className="text-xs text-white/55">Category</span>
-            <select className="mt-1 w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white focus:border-accent/40 focus:outline-none">
-              <option className="bg-background">General</option>
-              <option className="bg-background">OBC</option>
-              <option className="bg-background">SC / ST</option>
+            <span className="text-xs text-ink-muted">Category</span>
+            <select className="mt-1 w-full rounded-lg border border-soft-border-strong bg-soft px-3 py-2 text-sm text-ink focus:border-primary-300 focus:outline-none">
+              <option className="bg-white">General</option>
+              <option className="bg-white">OBC</option>
+              <option className="bg-white">SC / ST</option>
             </select>
           </label>
           <button className="btn-primary w-full text-sm">
@@ -852,22 +852,22 @@ function RankPredictorPanel() {
       </PanelShell>
       <PanelShell>
         <div className="flex items-center justify-between">
-          <h3 className="font-display text-base font-semibold text-white">
+          <h3 className="font-display text-base font-semibold text-ink">
             Predicted outcome
           </h3>
           <span className="chip text-[10px]">78% confidence</span>
         </div>
         <div className="mt-5 grid grid-cols-3 gap-3">
           {[
-            ["Predicted AIR", "412", "text-accent"],
-            ["Percentile", "99.78", "text-mint"],
+            ["Predicted AIR", "412", "text-primary"],
+            ["Percentile", "99.78", "text-success"],
             ["Likely branch", "Radio", "text-purple-400"],
           ].map(([l, v, c]) => (
             <div
               key={l as string}
-              className="rounded-xl border border-white/8 bg-white/[0.02] p-3 text-center"
+              className="rounded-xl border border-soft-border bg-soft/60 p-3 text-center"
             >
-              <div className="text-[10px] uppercase tracking-wider text-white/40">
+              <div className="text-[10px] uppercase tracking-wider text-ink-soft">
                 {l}
               </div>
               <div className={`mt-1 font-display text-2xl font-semibold ${c}`}>
@@ -876,8 +876,8 @@ function RankPredictorPanel() {
             </div>
           ))}
         </div>
-        <div className="mt-5 rounded-xl border border-accent/20 bg-accent/5 p-4 text-sm text-white/80">
-          <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider text-accent">
+        <div className="mt-5 rounded-xl border border-primary-200 bg-primary-50 p-4 text-sm text-ink-muted">
+          <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider text-primary">
             <Sparkles size={11} /> Suggestion
           </div>
           <p className="mt-1.5">
@@ -894,22 +894,22 @@ function AnalyticsPanel() {
   return (
     <div className="grid gap-4 lg:grid-cols-3">
       {[
-        { label: "MCQs solved", value: "1,284", delta: "+184 this week", icon: Sparkles, color: "text-accent" },
-        { label: "Accuracy", value: "78%", delta: "+6% vs last month", icon: Target, color: "text-mint" },
+        { label: "MCQs solved", value: "1,284", delta: "+184 this week", icon: Sparkles, color: "text-primary" },
+        { label: "Accuracy", value: "78%", delta: "+6% vs last month", icon: Target, color: "text-success" },
         { label: "Streak", value: "12 days", delta: "Best: 21", icon: Flame, color: "text-warning" },
         { label: "Time / Q", value: "52s", delta: "−8s vs last month", icon: Clock, color: "text-purple-400" },
       ].map((s) => (
         <PanelShell key={s.label}>
           <s.icon size={14} className={s.color} />
-          <div className="mt-2 font-display text-2xl font-semibold text-white">
+          <div className="mt-2 font-display text-2xl font-semibold text-ink">
             {s.value}
           </div>
-          <div className="text-xs text-white/50">{s.label}</div>
-          <div className="mt-3 text-[11px] text-mint">{s.delta}</div>
+          <div className="text-xs text-ink-soft">{s.label}</div>
+          <div className="mt-3 text-[11px] text-success">{s.delta}</div>
         </PanelShell>
       ))}
       <PanelShell className="lg:col-span-2">
-        <h3 className="font-display text-base font-semibold text-white">
+        <h3 className="font-display text-base font-semibold text-ink">
           Subject heatmap
         </h3>
         <div className="mt-4 grid grid-cols-3 gap-2 md:grid-cols-4">
@@ -925,13 +925,13 @@ function AnalyticsPanel() {
           ].map(([n, v, c]) => (
             <div
               key={n as string}
-              className="rounded-xl border border-white/8 bg-white/[0.02] p-3"
+              className="rounded-xl border border-soft-border bg-soft/60 p-3"
             >
-              <div className="text-[11px] text-white/55">{n}</div>
-              <div className="mt-1 font-display text-xl font-semibold text-white">
+              <div className="text-[11px] text-ink-muted">{n}</div>
+              <div className="mt-1 font-display text-xl font-semibold text-ink">
                 {v as number}%
               </div>
-              <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/5">
+              <div className="mt-2 h-1 overflow-hidden rounded-full bg-soft">
                 <div
                   className="h-full rounded-full"
                   style={{ width: `${v}%`, background: c as string }}
@@ -942,7 +942,7 @@ function AnalyticsPanel() {
         </div>
       </PanelShell>
       <PanelShell>
-        <h3 className="font-display text-base font-semibold text-white">
+        <h3 className="font-display text-base font-semibold text-ink">
           Weak topics
         </h3>
         <ul className="mt-3 space-y-2">
@@ -953,13 +953,13 @@ function AnalyticsPanel() {
           ].map(([t, v]) => (
             <li
               key={t as string}
-              className="rounded-lg border border-white/8 bg-white/[0.02] p-2.5"
+              className="rounded-lg border border-soft-border bg-soft/60 p-2.5"
             >
-              <div className="flex items-center justify-between text-sm text-white">
+              <div className="flex items-center justify-between text-sm text-ink">
                 {t}
                 <span className="text-[11px] text-warning">{v}%</span>
               </div>
-              <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-white/5">
+              <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-soft">
                 <div
                   className="h-full rounded-full bg-warning"
                   style={{ width: `${v}%` }}
@@ -977,25 +977,25 @@ function BookmarksPanel() {
   return (
     <PanelShell>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h3 className="font-display text-base font-semibold text-white">
+        <h3 className="font-display text-base font-semibold text-ink">
           Saved items
         </h3>
         <div className="flex items-center gap-2">
           <div className="relative">
             <Search
               size={12}
-              className="absolute left-2.5 top-1/2 -translate-y-1/2 text-white/40"
+              className="absolute left-2.5 top-1/2 -translate-y-1/2 text-ink-soft"
             />
             <input
               type="text"
               placeholder="Search bookmarks..."
-              className="h-8 rounded-full border border-white/10 bg-white/[0.03] pl-8 pr-3 text-xs text-white placeholder:text-white/40 focus:border-accent/40 focus:outline-none"
+              className="h-8 rounded-full border border-soft-border-strong bg-soft pl-8 pr-3 text-xs text-ink placeholder:text-ink-soft focus:border-primary-300 focus:outline-none"
             />
           </div>
           <span className="chip text-[10px]">All · 42</span>
         </div>
       </div>
-      <ul className="mt-4 divide-y divide-white/5">
+      <ul className="mt-4 divide-y divide-soft-border">
         {[
           ["Heart failure pharmacology", "Question · Medicine", "saved 2h ago"],
           ["Coronary circulation video", "Video · Anatomy", "saved 1d ago"],
@@ -1008,12 +1008,12 @@ function BookmarksPanel() {
             className="flex items-center justify-between gap-3 py-3"
           >
             <div>
-              <div className="text-sm font-medium text-white">{t}</div>
-              <div className="text-[11px] text-white/45">{sub}</div>
+              <div className="text-sm font-medium text-ink">{t}</div>
+              <div className="text-[11px] text-ink-soft">{sub}</div>
             </div>
-            <div className="flex items-center gap-3 text-[11px] text-white/45">
+            <div className="flex items-center gap-3 text-[11px] text-ink-soft">
               <span>{time}</span>
-              <button className="text-accent hover:text-accent/80">Open</button>
+              <button className="text-primary hover:text-primary/80">Open</button>
             </div>
           </li>
         ))}
@@ -1026,10 +1026,10 @@ function RevisionPlannerPanel() {
   return (
     <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
       <PanelShell>
-        <h3 className="font-display text-base font-semibold text-white">
+        <h3 className="font-display text-base font-semibold text-ink">
           This week
         </h3>
-        <p className="mt-0.5 text-xs text-white/50">
+        <p className="mt-0.5 text-xs text-ink-soft">
           28 of 42 chapters revised · 67% on track
         </p>
         <div className="mt-4 space-y-2">
@@ -1038,26 +1038,26 @@ function RevisionPlannerPanel() {
               key={d.day}
               className={`flex items-center gap-3 rounded-xl border p-3 ${
                 d.current
-                  ? "border-accent/30 bg-accent/5"
-                  : "border-white/8 bg-white/[0.02]"
+                  ? "border-primary-200 bg-primary-50"
+                  : "border-soft-border bg-soft/60"
               }`}
             >
-              <span className="grid h-9 w-9 place-items-center rounded-lg border border-white/10 bg-white/[0.04] text-xs text-white/70">
+              <span className="grid h-9 w-9 place-items-center rounded-lg border border-soft-border-strong bg-soft text-xs text-ink-muted">
                 {d.day}
               </span>
               <div className="flex-1">
-                <div className="text-sm font-medium text-white">{d.focus}</div>
+                <div className="text-sm font-medium text-ink">{d.focus}</div>
                 {d.current && (
-                  <div className="mt-0.5 text-[11px] text-accent">In progress</div>
+                  <div className="mt-0.5 text-[11px] text-primary">In progress</div>
                 )}
               </div>
               <span
                 className={`grid h-7 w-7 place-items-center rounded-full ${
                   d.done
-                    ? "bg-mint/15 text-mint"
+                    ? "bg-success-50 text-success"
                     : d.current
-                    ? "bg-accent/15 text-accent"
-                    : "border border-white/10 text-white/30"
+                    ? "bg-primary-50 text-primary"
+                    : "border border-soft-border-strong text-ink-faint"
                 }`}
               >
                 {d.done ? <CheckCircle2 size={13} /> : d.current ? <Timer size={13} /> : d.day[0]}
@@ -1067,14 +1067,14 @@ function RevisionPlannerPanel() {
         </div>
       </PanelShell>
       <PanelShell>
-        <h3 className="font-display text-base font-semibold text-white">
+        <h3 className="font-display text-base font-semibold text-ink">
           Exam countdown
         </h3>
         <div className="mt-4 text-center">
-          <div className="font-display text-5xl font-semibold gradient-text-accent">
+          <div className="font-display text-5xl font-semibold gradient-text-primary">
             47
           </div>
-          <div className="mt-1 text-xs text-white/50">days to NEET PG</div>
+          <div className="mt-1 text-xs text-ink-soft">days to NEET PG</div>
         </div>
         <div className="mt-6 space-y-2 text-xs">
           {[
@@ -1084,13 +1084,13 @@ function RevisionPlannerPanel() {
             ["Weak-topic revision", 42],
           ].map(([l, v]) => (
             <div key={l as string}>
-              <div className="flex items-center justify-between text-white/65">
+              <div className="flex items-center justify-between text-ink-muted">
                 <span>{l}</span>
-                <span className="text-white">{v}%</span>
+                <span className="text-ink">{v}%</span>
               </div>
-              <div className="mt-1 h-1 overflow-hidden rounded-full bg-white/5">
+              <div className="mt-1 h-1 overflow-hidden rounded-full bg-soft">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-accent to-mint"
+                  className="h-full rounded-full bg-gradient-to-r from-primary to-cyan-500"
                   style={{ width: `${v}%` }}
                 />
               </div>
@@ -1110,11 +1110,11 @@ function SchedulerPanel() {
     <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
       <PanelShell>
         <div className="flex items-center justify-between">
-          <h3 className="font-display text-base font-semibold text-white">
+          <h3 className="font-display text-base font-semibold text-ink">
             Today&apos;s focus timer
           </h3>
-          <span className="flex items-center gap-1.5 text-[11px] text-mint">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-mint" />
+          <span className="flex items-center gap-1.5 text-[11px] text-success">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-success" />
             Active session
           </span>
         </div>
@@ -1141,10 +1141,10 @@ function SchedulerPanel() {
               />
             </svg>
             <div className="text-center">
-              <div className="font-display text-4xl font-semibold text-white">
+              <div className="font-display text-4xl font-semibold text-ink">
                 24:18
               </div>
-              <div className="mt-1 text-[11px] text-white/50">Pathology · Block 2</div>
+              <div className="mt-1 text-[11px] text-ink-soft">Pathology · Block 2</div>
             </div>
           </div>
         </div>
@@ -1158,7 +1158,7 @@ function SchedulerPanel() {
         </div>
       </PanelShell>
       <PanelShell>
-        <h3 className="font-display text-base font-semibold text-white">
+        <h3 className="font-display text-base font-semibold text-ink">
           This week
         </h3>
         <div className="mt-4 grid grid-cols-7 gap-1.5 text-center">
@@ -1166,12 +1166,12 @@ function SchedulerPanel() {
             const v = [85, 100, 70, 32, 0, 0, 0][i];
             return (
               <div key={`${d}-${i}`} className="space-y-1.5">
-                <div className="text-[10px] text-white/45">{d}</div>
+                <div className="text-[10px] text-ink-soft">{d}</div>
                 <div
                   className={`mx-auto h-14 w-full rounded-md border ${
                     v > 0
-                      ? "border-accent/30 bg-accent/15"
-                      : "border-white/8 bg-white/[0.02]"
+                      ? "border-primary-200 bg-primary-50"
+                      : "border-soft-border bg-soft/60"
                   }`}
                   style={{
                     background:
@@ -1180,7 +1180,7 @@ function SchedulerPanel() {
                         : undefined,
                   }}
                 />
-                <div className="text-[10px] text-white/45">
+                <div className="text-[10px] text-ink-soft">
                   {v > 0 ? `${Math.round((v / 100) * 2.5)}h` : "—"}
                 </div>
               </div>
@@ -1188,17 +1188,17 @@ function SchedulerPanel() {
           })}
         </div>
         <ul className="mt-5 space-y-1.5 text-sm">
-          <li className="flex items-center justify-between text-white/65">
+          <li className="flex items-center justify-between text-ink-muted">
             <span>Total this week</span>
-            <span className="text-white">14.2 hrs</span>
+            <span className="text-ink">14.2 hrs</span>
           </li>
-          <li className="flex items-center justify-between text-white/65">
+          <li className="flex items-center justify-between text-ink-muted">
             <span>Daily goal</span>
-            <span className="text-white">2.5 hrs</span>
+            <span className="text-ink">2.5 hrs</span>
           </li>
-          <li className="flex items-center justify-between text-white/65">
+          <li className="flex items-center justify-between text-ink-muted">
             <span>Streak</span>
-            <span className="text-mint">12 days</span>
+            <span className="text-success">12 days</span>
           </li>
         </ul>
       </PanelShell>
@@ -1209,13 +1209,13 @@ function SchedulerPanel() {
 function PlaceholderPanel() {
   return (
     <PanelShell className="py-12 text-center">
-      <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl border border-white/10 bg-white/[0.04] text-white/60">
+      <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl border border-soft-border-strong bg-soft text-ink-muted">
         <Zap size={18} />
       </div>
-      <h3 className="mt-4 font-display text-lg font-semibold text-white">
+      <h3 className="mt-4 font-display text-lg font-semibold text-ink">
         Coming soon
       </h3>
-      <p className="mx-auto mt-1 max-w-sm text-sm text-white/55">
+      <p className="mx-auto mt-1 max-w-sm text-sm text-ink-muted">
         This feature is being polished. Get a head-start with the tools already
         live in your dashboard.
       </p>
