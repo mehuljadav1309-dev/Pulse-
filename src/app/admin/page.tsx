@@ -1,10 +1,12 @@
 import { prisma } from "@/lib/db";
+import { ensureSeeded } from "@/lib/seed-once";
 import { IconBook, IconCheck, IconClock, IconUpload } from "@tabler/icons-react";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminOverview() {
+  await ensureSeeded();
   const [subjectCount, topicCount, mcqCount, recentUploads] = await Promise.all([
     prisma.subject.count(),
     prisma.topic.count(),

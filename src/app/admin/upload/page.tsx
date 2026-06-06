@@ -1,9 +1,11 @@
 import { prisma } from "@/lib/db";
+import { ensureSeeded } from "@/lib/seed-once";
 import { UploadForm } from "./UploadForm";
 
 export const dynamic = "force-dynamic";
 
 export default async function UploadPage() {
+  await ensureSeeded();
   const subjects = await prisma.subject.findMany({
     orderBy: { name: "asc" },
     select: { id: true, name: true, slug: true },

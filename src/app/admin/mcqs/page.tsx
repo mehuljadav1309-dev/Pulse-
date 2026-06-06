@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { ensureSeeded } from "@/lib/seed-once";
 import Link from "next/link";
 import { DeleteButton } from "./DeleteButton";
 
@@ -11,6 +12,7 @@ export default async function MCQsPage({
 }: {
   searchParams: Promise<{ subject?: string; topic?: string; q?: string; page?: string }>;
 }) {
+  await ensureSeeded();
   const sp = await searchParams;
   const subjectSlug = sp.subject ?? "";
   const topicSlug = sp.topic ?? "";

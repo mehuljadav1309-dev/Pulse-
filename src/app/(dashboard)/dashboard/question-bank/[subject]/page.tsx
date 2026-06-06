@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { ensureSeeded } from "@/lib/seed-once";
 import { getOrCreateDbUser } from "@/lib/user";
 import { auth } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
@@ -17,6 +18,7 @@ export default async function SubjectTopicsPage({
 }: {
   params: Promise<{ subject: string }>;
 }) {
+  await ensureSeeded();
   const { subject: slug } = await params;
   const subject = await prisma.subject.findUnique({
     where: { slug },

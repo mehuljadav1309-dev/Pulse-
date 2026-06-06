@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { ensureSeeded } from "@/lib/seed-once";
 import { getOrCreateDbUser } from "@/lib/user";
 import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
@@ -33,6 +34,7 @@ const SUBJECT_COLORS = [
 ];
 
 export default async function QuestionBankPage() {
+  await ensureSeeded();
   const { userId } = await auth();
   const user = userId ? await getOrCreateDbUser() : null;
 

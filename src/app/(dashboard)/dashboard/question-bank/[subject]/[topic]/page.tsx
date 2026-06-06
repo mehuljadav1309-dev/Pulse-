@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { ensureSeeded } from "@/lib/seed-once";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { IconArrowLeft, IconBolt } from "@tabler/icons-react";
@@ -11,6 +12,7 @@ export default async function TopicMCQPage({
 }: {
   params: Promise<{ subject: string; topic: string }>;
 }) {
+  await ensureSeeded();
   const { subject: subjectSlug, topic: topicSlug } = await params;
   const subject = await prisma.subject.findUnique({ where: { slug: subjectSlug } });
   if (!subject) notFound();
