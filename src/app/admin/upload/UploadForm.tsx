@@ -25,7 +25,7 @@ export function UploadForm({
   const [newTopic, setNewTopic] = useState<string>("");
   const [topicId, setTopicId] = useState<string>("");
   const [useAI, setUseAI] = useState<boolean>(true);
-  const [aiAlways, setAiAlways] = useState<boolean>(false);
+  const [aiAlways, setAiAlways] = useState<boolean>(true);
 
   const filteredTopics = topics.filter((t) => t.subjectId === subjectId);
   const usingNewTopic = newTopic.trim().length > 0;
@@ -128,30 +128,38 @@ export function UploadForm({
         <label className="upload-form__ai-toggle">
           <input
             type="checkbox"
-            name="useAI"
-            checked={useAI}
-            onChange={(e) => setUseAI(e.target.checked)}
+            name="aiAlways"
+            checked={aiAlways}
+            onChange={(e) => {
+              setAiAlways(e.target.checked);
+              if (e.target.checked) setUseAI(true);
+            }}
           />
           <IconBrain size={14} />
           <span>
-            <strong>AI fallback</strong> — when the deterministic parser
-            can&apos;t extract enough MCQs, send the document to OpenRouter
-            (Qwen3-80B → Gemma-4 fallback).
+            <strong>Always run AI.</strong> Send the document to OpenRouter
+            (Qwen3-80B → Gemma-4 fallback) so the AI extracts MCQs from the
+            full text. The deterministic parser runs in parallel and merges
+            its results.
           </span>
         </label>
-        {useAI && (
-          <label className="upload-form__ai-toggle upload-form__ai-toggle--sub">
-            <input
-              type="checkbox"
-              name="aiAlways"
-              checked={aiAlways}
-              onChange={(e) => setAiAlways(e.target.checked)}
-            />
-            <IconSparkles size={13} />
-            <span>Always run AI (skips the deterministic parser).</span>
-          </label>
-        )}
-        {useAI && (
+        <label className="upload-form__ai-toggle upload-form__ai-toggle--sub">
+          <input
+            type="checkbox"
+            name="useAI"
+            checked={useAI}
+            disabled={aiAlways}
+            onChange={(e) => setUseAI(e.target.checked)}
+          />
+          <IconSparkles size={13} />
+          <span>
+            Run the deterministic parser first (JSON / CSV / CEREB HTML /
+            line-based PDF). {aiAlways
+              ? "Always on while AI-always is enabled."
+              : "When off, the AI extractor is the only path."}
+          </span>
+        </label>
+        {(useAI || aiAlways) && (
           <div className="upload-form__ai-meta">
             <IconClock size={11} /> Adds 5–30 s depending on document size.
             <IconAlertTriangle size={11} /> Sends the document text to OpenRouter.
