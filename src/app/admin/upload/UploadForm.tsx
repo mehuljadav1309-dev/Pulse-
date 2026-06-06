@@ -2,7 +2,7 @@
 
 import { useFormState, useFormStatus } from "react-dom";
 import { useState } from "react";
-import { IconCloudUpload, IconFile, IconPlus, IconSparkles, IconX, IconBrain, IconClock, IconAlertTriangle } from "@tabler/icons-react";
+import { IconCloudUpload, IconFile, IconPlus, IconSparkles, IconX, IconBrain, IconAlertTriangle } from "@tabler/icons-react";
 import { uploadMCQFile, type UploadFormState } from "./actions";
 
 type Subject = { id: string; name: string; slug: string };
@@ -24,8 +24,6 @@ export function UploadForm({
   const [subjectId, setSubjectId] = useState<string>("");
   const [newTopic, setNewTopic] = useState<string>("");
   const [topicId, setTopicId] = useState<string>("");
-  const [useAI, setUseAI] = useState<boolean>(true);
-  const [aiAlways, setAiAlways] = useState<boolean>(true);
 
   const filteredTopics = topics.filter((t) => t.subjectId === subjectId);
   const usingNewTopic = newTopic.trim().length > 0;
@@ -118,53 +116,10 @@ export function UploadForm({
       </div>
 
       <div className="upload-form__hint">
-        <strong>Tip:</strong> JSON/CSV rows with a <code>topic</code> field are
-        auto-routed. CEREB HTML exports keep their <code>&lt;h2&gt;</code> test
-        titles as topics. Filename keywords (e.g. <code>anatomy_neet_2024.pdf</code>)
-        infer the subject.
-      </div>
-
-      <div className="upload-form__ai">
-        <label className="upload-form__ai-toggle">
-          <input
-            type="checkbox"
-            name="aiAlways"
-            checked={aiAlways}
-            onChange={(e) => {
-              setAiAlways(e.target.checked);
-              if (e.target.checked) setUseAI(true);
-            }}
-          />
-          <IconBrain size={14} />
-          <span>
-            <strong>Always run AI.</strong> Send the document to OpenRouter
-            (Qwen3-80B → Gemma-4 fallback) so the AI extracts MCQs from the
-            full text. The deterministic parser runs in parallel and merges
-            its results.
-          </span>
-        </label>
-        <label className="upload-form__ai-toggle upload-form__ai-toggle--sub">
-          <input
-            type="checkbox"
-            name="useAI"
-            checked={useAI}
-            disabled={aiAlways}
-            onChange={(e) => setUseAI(e.target.checked)}
-          />
-          <IconSparkles size={13} />
-          <span>
-            Run the deterministic parser first (JSON / CSV / CEREB HTML /
-            line-based PDF). {aiAlways
-              ? "Always on while AI-always is enabled."
-              : "When off, the AI extractor is the only path."}
-          </span>
-        </label>
-        {(useAI || aiAlways) && (
-          <div className="upload-form__ai-meta">
-            <IconClock size={11} /> Adds 5–30 s depending on document size.
-            <IconAlertTriangle size={11} /> Sends the document text to OpenRouter.
-          </div>
-        )}
+        <strong>Tip:</strong> Every upload is sent to OpenRouter in the
+        background (Qwen3-80B → Gemma-4 fallback) and merged with the
+        deterministic parser. JSON/CSV rows with a <code>topic</code> field
+        are auto-routed; CEREB HTML keeps its <code>&lt;h2&gt;</code> titles.
       </div>
 
       <label
@@ -221,6 +176,9 @@ export function UploadForm({
             <div className="upload-drop__hint">
               Accepts <code>.pdf</code>, <code>.html</code>, <code>.csv</code>,{" "}
               <code>.json</code>
+            </div>
+            <div className="upload-drop__ai">
+              <IconBrain size={11} /> AI runs automatically — no toggle needed.
             </div>
           </div>
         )}

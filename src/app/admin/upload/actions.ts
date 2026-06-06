@@ -52,8 +52,6 @@ export async function uploadMCQFile(
   const topicId = String(formData.get("topicId") ?? "");
   const newTopicName = String(formData.get("newTopicName") ?? "").trim();
   const filenameOverride = String(formData.get("filename") ?? "").trim();
-  const useAI = formData.get("useAI") === "on" || formData.get("useAI") === "true";
-  const aiAlways = formData.get("aiAlways") === "on" || formData.get("aiAlways") === "true";
 
   if (!(file instanceof File) || file.size === 0) {
     return { status: "error", message: "Please choose a file." };
@@ -65,10 +63,12 @@ export async function uploadMCQFile(
   // for now — the same question rarely appears in two subjects).
   const existingHashes = await loadAllHashes();
 
+  // AI runs on every upload — no toggle. The deterministic parser runs in
+  // parallel and both results merge.
   const parsed = await parseFile(file, {
     knownHashes: existingHashes,
-    aiFallback: useAI,
-    aiAlways,
+    aiFallback: true,
+    aiAlways: false,
   });
   const uniqueMcqs = parsed.uniqueMcqs;
   const warnings: string[] = [...parsed.warnings];
@@ -88,10 +88,8 @@ export async function uploadMCQFile(
         errorMessage: "No new MCQs to insert.",
       },
     });
-    const aiTried = !!(parsed.ai || useAI);
-    const hint = aiTried
-      ? "Both the deterministic parser and the AI extractor found no extractable MCQs. Check that the file contains a question bank (numbered questions with 2-6 options) and that the text is selectable, not a scanned image."
-      : "Enable the AI extractor (it's on by default) so the document is sent to OpenRouter for parsing.";
+    const hint =
+      "Both the deterministic parser and the AI extractor found no extractable MCQs. Check that the file contains a question bank (numbered questions with 2-6 options) and that the text is selectable, not a scanned image.";
     return {
       status: "error",
       message: `No MCQs were extracted from "${filename}". ${hint}`,
