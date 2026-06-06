@@ -29,6 +29,10 @@ export default function SignUpPage() {
           </span>
         </a>
         <SignUp
+          forceRedirectUrl="/dashboard"
+          fallbackRedirectUrl="/dashboard"
+          signInForceRedirectUrl="/dashboard"
+          signInFallbackRedirectUrl="/dashboard"
           appearance={{
             elements: {
               rootBox: "w-full max-w-md",

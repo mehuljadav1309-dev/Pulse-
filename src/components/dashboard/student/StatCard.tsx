@@ -34,12 +34,12 @@ export function StatCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.45, delay: index * 0.05, ease: [0.16, 1, 0.3, 1] }}
-      className="group relative overflow-hidden rounded-3xl border border-soft-border bg-white p-5 shadow-soft-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-soft-md"
+      className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.05] to-white/[0.01] p-5 transition-all duration-300 hover:border-white/20 hover:shadow-ambient"
     >
       <div
         aria-hidden
         className={cn(
-          "pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-gradient-radial opacity-30 blur-2xl transition-opacity duration-500 group-hover:opacity-70",
+          "pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-gradient-radial opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100",
           gradient
         )}
       />
@@ -57,20 +57,20 @@ export function StatCard({
         {delta && (
           <span
             className={cn(
-              "rounded-full px-2 py-0.5 text-[10px] font-bold",
-              deltaTone === "up" && "bg-success/10 text-success",
-              deltaTone === "down" && "bg-pink-100 text-pink-700",
-              deltaTone === "neutral" && "bg-soft text-ink-muted"
+              "rounded-full border px-2 py-0.5 text-[10px] font-bold",
+              deltaTone === "up" && "border-mint/30 bg-mint/10 text-mint",
+              deltaTone === "down" && "border-danger/30 bg-danger/10 text-danger",
+              deltaTone === "neutral" && "border-white/10 bg-white/[0.05] text-white/65"
             )}
           >
             {delta}
           </span>
         )}
       </div>
-      <div className="relative mt-4 font-display text-3xl font-bold tracking-tight text-ink">
+      <div className="relative mt-4 font-display text-3xl font-bold tracking-tight text-white">
         <Counter value={value} prefix={prefix} suffix={suffix} format={format} />
       </div>
-      <div className="relative mt-0.5 text-[12px] font-semibold text-ink-soft">
+      <div className="relative mt-0.5 text-[12px] font-semibold text-white/55">
         {label}
       </div>
     </motion.div>

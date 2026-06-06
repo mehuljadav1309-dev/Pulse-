@@ -15,7 +15,7 @@ export function ProgressBar({
   value,
   label,
   detail,
-  gradient = "from-primary to-secondary",
+  gradient = "from-accent to-mint",
   index = 0,
 }: ProgressBarProps) {
   const pct = Math.max(0, Math.min(100, value));
@@ -29,11 +29,11 @@ export function ProgressBar({
     >
       {(label || detail) && (
         <div className="flex items-center justify-between text-[12px]">
-          <span className="font-semibold text-ink">{label}</span>
-          {detail && <span className="font-semibold text-ink-muted">{detail}</span>}
+          <span className="font-semibold text-white">{label}</span>
+          {detail && <span className="font-semibold text-white/55">{detail}</span>}
         </div>
       )}
-      <div className="h-2 overflow-hidden rounded-full bg-soft">
+      <div className="h-2 overflow-hidden rounded-full bg-white/5">
         <motion.div
           className={cn("h-full rounded-full bg-gradient-to-r", gradient)}
           initial={{ width: 0 }}

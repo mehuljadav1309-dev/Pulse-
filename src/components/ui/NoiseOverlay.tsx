@@ -7,7 +7,10 @@ export function NoiseOverlay() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (document.body.classList.contains("dash")) return;
+    if (document.body.classList.contains("dash-dark")) {
+      setEnabled(true);
+      return;
+    }
     setEnabled(true);
   }, []);
 

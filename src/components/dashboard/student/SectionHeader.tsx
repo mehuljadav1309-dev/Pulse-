@@ -30,12 +30,12 @@ export function SectionHeader({
       )}
     >
       <div>
-        {eyebrow && <div className="eyebrow">{eyebrow}</div>}
-        <h2 className="mt-1 font-display text-xl font-bold tracking-tight text-ink md:text-2xl">
+        {eyebrow && <span className="label">{eyebrow}</span>}
+        <h2 className="mt-1 font-display text-xl font-bold tracking-tight text-white md:text-2xl">
           {title}
         </h2>
         {description && (
-          <p className="mt-1 max-w-xl text-[13.5px] text-ink-muted">{description}</p>
+          <p className="mt-1 max-w-xl text-[13.5px] text-white/55">{description}</p>
         )}
       </div>
       {action}

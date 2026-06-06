@@ -39,12 +39,12 @@ export function QuickActionCard({
     >
       <Link
         href={href}
-        className="group relative block h-full overflow-hidden rounded-3xl border border-soft-border bg-white p-4 shadow-soft-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-soft-lg"
+        className="group relative block h-full overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.05] to-white/[0.01] p-4 transition-all duration-300 hover:border-white/20 hover:shadow-ambient"
       >
         <div
           aria-hidden
           className={cn(
-            "pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-radial opacity-30 blur-2xl transition-opacity duration-500 group-hover:opacity-60",
+            "pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-radial opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100",
             gradient
           )}
         />
@@ -61,16 +61,16 @@ export function QuickActionCard({
           </span>
           <div className="min-w-0 flex-1">
             <div className="flex items-center justify-between gap-2">
-              <h3 className="font-display text-[15px] font-semibold tracking-tight text-ink">
+              <h3 className="font-display text-[15px] font-semibold tracking-tight text-white">
                 {label}
               </h3>
               {badge && (
-                <span className="rounded-full bg-soft px-2 py-0.5 text-[10px] font-semibold text-primary">
+                <span className="rounded-full border border-white/10 bg-white/[0.05] px-2 py-0.5 text-[10px] font-semibold text-white/80">
                   {badge}
                 </span>
               )}
             </div>
-            <p className="mt-0.5 line-clamp-2 text-[12.5px] leading-snug text-ink-soft">
+            <p className="mt-0.5 line-clamp-2 text-[12.5px] leading-snug text-white/55">
               {description}
             </p>
           </div>
@@ -78,11 +78,11 @@ export function QuickActionCard({
 
         {typeof progress === "number" && (
           <div className="relative mt-4">
-            <div className="flex items-center justify-between text-[10px] font-semibold text-ink-faint">
+            <div className="flex items-center justify-between text-[10px] font-semibold text-white/40">
               <span>Progress</span>
-              <span className="text-ink-muted">{Math.round(progress)}%</span>
+              <span className="text-white/65">{Math.round(progress)}%</span>
             </div>
-            <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-soft">
+            <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-white/5">
               <div
                 className={cn("h-full rounded-full bg-gradient-to-r", gradient)}
                 style={{ width: `${Math.max(0, Math.min(100, progress))}%` }}
@@ -92,14 +92,14 @@ export function QuickActionCard({
         )}
 
         <div className="relative mt-4 flex items-center justify-between">
-          <span className="inline-flex items-center gap-1 text-[12px] font-semibold text-primary">
+          <span className="inline-flex items-center gap-1 text-[12px] font-semibold text-white/85 transition group-hover:text-white">
             {cta}
             <ArrowRight
               size={13}
               className="transition-transform group-hover:translate-x-0.5"
             />
           </span>
-          <span className="rounded-md bg-soft px-1.5 py-0.5 font-mono text-[10px] text-ink-faint">
+          <span className="rounded-md bg-white/[0.04] px-1.5 py-0.5 font-mono text-[10px] text-white/35">
             {String(index + 1).padStart(2, "0")}
           </span>
         </div>

@@ -51,19 +51,19 @@
     text-rendering: optimizeLegibility;
   }
 
-  body.dash {
-    background: var(--dash-bg);
-    color: var(--dash-ink);
+  body.dash-dark {
+    background: var(--bg);
+    color: rgb(235, 235, 240);
   }
 
   ::selection {
-    background-color: rgba(79, 70, 229, 0.18);
-    color: #1d1852;
+    background-color: rgba(79, 140, 255, 0.35);
+    color: #ffffff;
   }
 
-  body.dash ::selection {
-    background-color: rgba(79, 70, 229, 0.18);
-    color: #1d1852;
+  body.dash-dark ::selection {
+    background-color: rgba(79, 140, 255, 0.35);
+    color: #ffffff;
   }
 
   ::-webkit-scrollbar {
@@ -73,27 +73,27 @@
   ::-webkit-scrollbar-track {
     background: #0a0a0a;
   }
-  body.dash ::-webkit-scrollbar-track {
-    background: transparent;
+  body.dash-dark ::-webkit-scrollbar-track {
+    background: #0a0a0a;
   }
   ::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.08);
     border-radius: 10px;
   }
-  body.dash ::-webkit-scrollbar-thumb {
-    background: rgba(15, 23, 42, 0.10);
+  body.dash-dark ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
   }
   ::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.16);
   }
-  body.dash ::-webkit-scrollbar-thumb:hover {
-    background: rgba(15, 23, 42, 0.20);
+  body.dash-dark ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.16);
   }
 
   /* Hide native cursor on devices with a fine pointer (only on marketing site) */
   @media (pointer: fine) {
-    body.has-custom-cursor:not(.dash),
-    body.has-custom-cursor:not(.dash) * {
+    body.has-custom-cursor:not(.dash-dark),
+    body.has-custom-cursor:not(.dash-dark) * {
       cursor: none !important;
     }
   }

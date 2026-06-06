@@ -11,7 +11,6 @@ export function CustomCursor() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (window.matchMedia("(pointer: coarse)").matches) return;
-    if (document.body.classList.contains("dash")) return;
 
     document.body.classList.add("has-custom-cursor");
     setHidden(false);

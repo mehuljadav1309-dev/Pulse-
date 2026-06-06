@@ -31,9 +31,9 @@ export function ProgressRing({
   duration = 1.4,
   showLabel = true,
   label,
-  trackColor = "rgba(15, 23, 42, 0.08)",
-  fromColor = "#4F46E5",
-  toColor = "#06B6D4",
+  trackColor = "rgba(255,255,255,0.08)",
+  fromColor = "#4F8CFF",
+  toColor = "#00E5A8",
   glow = true,
 }: ProgressRingProps) {
   const id = useId();
@@ -95,7 +95,7 @@ export function ProgressRing({
       </svg>
       {showLabel && (
         <div className="relative z-10 text-center">
-          <div className="font-display text-lg font-bold tracking-tight text-ink">
+          <div className="font-display text-lg font-bold tracking-tight text-white">
             {label ?? `${Math.round(clamped)}%`}
           </div>
         </div>
@@ -103,7 +103,7 @@ export function ProgressRing({
       <span
         aria-hidden
         className={cn(
-          "pointer-events-none absolute inset-1 rounded-full bg-gradient-to-br from-white/40 to-transparent opacity-60",
+          "pointer-events-none absolute inset-1 rounded-full bg-gradient-to-br from-white/15 to-transparent opacity-50",
           trackClassName
         )}
       />

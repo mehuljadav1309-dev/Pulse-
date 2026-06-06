@@ -41,9 +41,7 @@ export function AnimatedCounter({
     return () => cancelAnimationFrame(raf);
   }, [inView, value, duration]);
 
-  const formatted = format
-    ? format(display)
-    : display.toFixed(decimals);
+  const formatted = format ? format(display) : display.toFixed(decimals);
 
   return (
     <motion.span

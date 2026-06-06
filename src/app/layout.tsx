@@ -117,7 +117,10 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <ClerkProvider>
+        <ClerkProvider
+          signInFallbackRedirectUrl="/dashboard"
+          signUpFallbackRedirectUrl="/dashboard"
+        >
           <Providers>
             <CustomCursor />
             <NoiseOverlay />
