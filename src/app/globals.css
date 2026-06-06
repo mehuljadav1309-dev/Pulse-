@@ -1673,6 +1673,105 @@ body:not(.dash-dark) .upload-field__hint {
   background: rgba(0, 229, 168, 0.2);
   margin-left: 2px;
 }
+.upload-topic-chip__subj {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.upload-topic-chip__count {
+  font-size: 10.5px;
+  padding: 0 5px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  font-variant-numeric: tabular-nums;
+  margin-left: 2px;
+}
+.upload-topic-chip--new-subject {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #fcd34d;
+}
+.upload-topic-chip--new-subject .upload-topic-chip__subj {
+  color: #fcd34d;
+}
+.upload-form__autodetect {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+  padding: 0.7rem 0.9rem;
+  border-radius: 10px;
+  background: rgba(79, 140, 255, 0.08);
+  border: 1px solid rgba(79, 140, 255, 0.25);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+.upload-form__autodetect > svg {
+  color: #b9cdff;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.upload-form__autodetect strong {
+  color: #b9cdff;
+}
+.upload-form__autodetect code {
+  font-size: 11px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-family: var(--font-mono, monospace);
+}
+body:not(.dash-dark) .upload-form__autodetect {
+  background: rgba(79, 140, 255, 0.06);
+  border-color: rgba(79, 140, 255, 0.2);
+  color: #0c0e16;
+}
+body:not(.dash-dark) .upload-form__autodetect > svg {
+  color: #3a72dc;
+}
+body:not(.dash-dark) .upload-form__autodetect strong {
+  color: #3a72dc;
+}
+body:not(.dash-dark) .upload-form__autodetect code {
+  background: rgba(0, 0, 0, 0.08);
+}
+.upload-alert__meta {
+  font-size: 11.5px;
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.65);
+}
+body:not(.dash-dark) .upload-alert__meta {
+  color: #5a6275;
+}
+.upload-alert__subjects {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-top: 0.5rem;
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.6);
+}
+.upload-alert__label {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 10px;
+  margin-right: 4px;
+}
+body:not(.dash-dark) .upload-alert__subjects {
+  color: #5a6275;
+}
+.upload-subject-chip {
+  font-size: 10.5px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(79, 140, 255, 0.12);
+  border: 1px solid rgba(79, 140, 255, 0.3);
+  color: #b9cdff;
+}
 .upload-alert {
   padding: 0.75rem 1rem;
   border-radius: 10px;

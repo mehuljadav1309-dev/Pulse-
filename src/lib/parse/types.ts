@@ -5,6 +5,7 @@ export type ParsedMCQ = {
   explanation?: string;
   difficulty?: "easy" | "medium" | "hard";
   topic?: string;
+  subject?: string;
 };
 
 export type ParseResult = {

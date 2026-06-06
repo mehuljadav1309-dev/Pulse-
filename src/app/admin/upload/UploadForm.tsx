@@ -2,7 +2,7 @@
 
 import { useFormState, useFormStatus } from "react-dom";
 import { useState } from "react";
-import { IconCloudUpload, IconFile, IconPlus, IconX } from "@tabler/icons-react";
+import { IconCloudUpload, IconFile, IconPlus, IconSparkles, IconX } from "@tabler/icons-react";
 import { uploadMCQFile, type UploadFormState } from "./actions";
 
 type Subject = { id: string; name: string; slug: string };
@@ -27,12 +27,27 @@ export function UploadForm({
 
   const filteredTopics = topics.filter((t) => t.subjectId === subjectId);
   const usingNewTopic = newTopic.trim().length > 0;
+  const autoDetect = subjectId === "" && !topicId && !newTopic.trim();
 
   return (
     <form action={formAction} className="upload-form">
+      {autoDetect && (
+        <div className="upload-form__autodetect">
+          <IconSparkles size={14} />
+          <div>
+            <strong>Auto-detect mode.</strong> Subject and topic will be inferred
+            from the file (CEREB iframe titles, JSON/CSV <code>topic</code> field,
+            HTML <code>Topic:</code> lines, or filename keywords). Leave as-is
+            unless you want to force a specific subject.
+          </div>
+        </div>
+      )}
+
       <div className="upload-form__row">
         <label className="upload-field">
-          <span className="upload-field__label">Subject</span>
+          <span className="upload-field__label">
+            Primary subject <span className="upload-field__hint">(optional — defaults to auto-detect)</span>
+          </span>
           <select
             name="subjectId"
             value={subjectId}
@@ -42,9 +57,8 @@ export function UploadForm({
               setNewTopic("");
             }}
             className="upload-field__input"
-            required
           >
-            <option value="">Choose a subject…</option>
+            <option value="">Auto-detect from file</option>
             {subjects.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.name}
@@ -57,8 +71,10 @@ export function UploadForm({
       <div className="upload-form__row">
         <label className="upload-field">
           <span className="upload-field__label">
-            Existing topic
-            {usingNewTopic && <span className="upload-field__hint"> (ignored — using new topic below)</span>}
+            Default topic{" "}
+            <span className="upload-field__hint">
+              (used if MCQ has no per-row topic)
+            </span>
           </span>
           <select
             name="topicId"
@@ -68,7 +84,7 @@ export function UploadForm({
             disabled={!subjectId || usingNewTopic}
           >
             <option value="">
-              {subjectId ? "Choose an existing topic…" : "Pick a subject first"}
+              {subjectId ? "Auto (use per-MCQ topic)" : "Pick a subject first"}
             </option>
             {filteredTopics.map((t) => (
               <option key={t.id} value={t.id}>
@@ -100,10 +116,10 @@ export function UploadForm({
       </div>
 
       <div className="upload-form__hint">
-        <strong>Tip:</strong> if your file contains a <code>topic</code> (JSON/CSV) or
-        <code> Topic:</code> / <code>Chapter:</code> lines (HTML/PDF), each MCQ will
-        be routed to its own topic automatically. Otherwise all MCQs will be saved
-        under the topic you pick or create here.
+        <strong>Tip:</strong> JSON/CSV rows with a <code>topic</code> field are
+        auto-routed. CEREB HTML exports keep their <code>&lt;h2&gt;</code> test
+        titles as topics. Filename keywords (e.g. <code>anatomy_neet_2024.pdf</code>)
+        infer the subject.
       </div>
 
       <label
@@ -170,24 +186,46 @@ export function UploadForm({
       {state.status === "success" && (
         <div className="upload-alert upload-alert--ok">
           <div className="upload-alert__title">{state.message}</div>
+          {(state.duplicates ?? 0) > 0 && (
+            <div className="upload-alert__meta">
+              Skipped {state.duplicates} duplicate
+              {state.duplicates === 1 ? "" : "s"} (already in the bank).
+            </div>
+          )}
+          {state.subjectsDetected && state.subjectsDetected.length > 0 && (
+            <div className="upload-alert__subjects">
+              <span className="upload-alert__label">Subjects:</span>
+              {state.subjectsDetected.map((s) => (
+                <span key={s} className="upload-subject-chip">
+                  {s}
+                </span>
+              ))}
+            </div>
+          )}
           {state.topicSummary && state.topicSummary.length > 0 && (
             <div className="upload-alert__topics">
               {state.topicSummary.map((t, i) => (
                 <span
                   key={i}
                   className={
-                    "upload-topic-chip" + (t.created ? " upload-topic-chip--new" : "")
+                    "upload-topic-chip" +
+                    (t.createdTopic ? " upload-topic-chip--new" : "") +
+                    (t.createdSubject ? " upload-topic-chip--new-subject" : "")
                   }
+                  title={t.createdSubject ? "New subject created" : undefined}
                 >
-                  {t.name} · {t.count}
-                  {t.created && <span className="upload-topic-chip__new">new</span>}
+                  <span className="upload-topic-chip__subj">{t.subject}</span>
+                  <IconChevronRightMini />
+                  <span>{t.topic}</span>
+                  <span className="upload-topic-chip__count">{t.count}</span>
+                  {t.createdTopic && <span className="upload-topic-chip__new">new</span>}
                 </span>
               ))}
             </div>
           )}
           {state.warnings && state.warnings.length > 0 && (
             <details>
-              <summary>{state.warnings.length} warning(s)</summary>
+              <summary>{state.warnings.length} notice(s)</summary>
               <ul>
                 {state.warnings.map((w, i) => (
                   <li key={i}>{w}</li>
@@ -210,6 +248,14 @@ export function UploadForm({
         </div>
       )}
     </form>
+  );
+}
+
+function IconChevronRightMini() {
+  return (
+    <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+      <path d="M9 6l6 6-6 6" />
+    </svg>
   );
 }
 

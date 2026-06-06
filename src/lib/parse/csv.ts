@@ -1,67 +1,153 @@
-import Papa from "papaparse";
-import type { ParseResult, ParsedMCQ } from "./types";
+import { extractFromObject } from "./normalize";
+import type { ParseResult } from "./types";
 
 /**
- * CSV parser.
- * Expected columns (case-insensitive, any order):
- *   question | q | stem
- *   option_a / a | option_b / b | option_c / c | option_d / d
- *   answer | correct | answer_index
- *   explanation (optional)
- *   difficulty (optional)
+ * RFC-4180-ish CSV parser. Handles:
+ *   - quoted cells ("…") with embedded commas, newlines, and "" escapes
+ *   - CRLF / LF / CR line endings
+ *   - blank lines (skipped)
+ * Returns a 2-D array of unescaped cell strings.
+ */
+function parseCSVText(input: string): string[][] {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let cell = "";
+  let inQuotes = false;
+  let i = 0;
+  while (i < input.length) {
+    const c = input[i];
+    if (inQuotes) {
+      if (c === '"') {
+        if (input[i + 1] === '"') {
+          cell += '"';
+          i += 2;
+          continue;
+        }
+        inQuotes = false;
+        i++;
+        continue;
+      }
+      cell += c;
+      i++;
+      continue;
+    }
+    if (c === '"') {
+      inQuotes = true;
+      i++;
+      continue;
+    }
+    if (c === ",") {
+      row.push(cell);
+      cell = "";
+      i++;
+      continue;
+    }
+    if (c === "\r") {
+      // peek for CRLF
+      if (input[i + 1] === "\n") i++;
+      row.push(cell);
+      cell = "";
+      if (row.length > 0 && !(row.length === 1 && row[0] === "")) rows.push(row);
+      row = [];
+      i++;
+      continue;
+    }
+    if (c === "\n") {
+      row.push(cell);
+      cell = "";
+      if (!(row.length === 1 && row[0] === "")) rows.push(row);
+      row = [];
+      i++;
+      continue;
+    }
+    cell += c;
+    i++;
+  }
+  if (cell !== "" || row.length > 0) {
+    row.push(cell);
+    if (!(row.length === 1 && row[0] === "")) rows.push(row);
+  }
+  return rows;
+}
+
+const HEADER_ALIASES: Record<string, string[]> = {
+  question: ["question", "q", "stem", "prompt", "text", "question_html"],
+  a: ["a", "option_a", "opt_a", "choice_a", "answer_a"],
+  b: ["b", "option_b", "opt_b", "choice_b", "answer_b"],
+  c: ["c", "option_c", "opt_c", "choice_c", "answer_c"],
+  d: ["d", "option_d", "opt_d", "choice_d", "answer_d"],
+  e: ["e", "option_e", "opt_e", "choice_e", "answer_e"],
+  f: ["f", "option_f", "opt_f", "choice_f", "answer_f"],
+  answer: ["answer", "correct", "correct_answer", "ans", "key"],
+  explanation: ["explanation", "explain", "solution", "exp", "rationale", "explanation_html"],
+  topic: ["topic", "subject", "chapter", "section"],
+  difficulty: ["difficulty", "level"],
+  source: ["source", "ref"],
+};
+
+/**
+ * CSV parser. Returns ParsedMCQ[] via the shared normalizer.
  */
 export function parseCSV(input: string): ParseResult {
   const warnings: string[] = [];
-  const result = Papa.parse<Record<string, string>>(input, {
-    header: true,
-    skipEmptyLines: "greedy",
-    transformHeader: (h) => h.trim().toLowerCase().replace(/\s+/g, "_"),
-    // Don't try to be strict — accept rows that have extra fields (e.g. unquoted
-    // commas in explanation cells) and just keep the first N fields.
-  });
-  if (result.errors.length) {
-    for (const e of result.errors.slice(0, 3)) {
-      if (e.code === "TooFewFields" || e.code === "TooManyFields") continue;
-      warnings.push(`Row ${e.row}: ${e.message}`);
-    }
+  const rows = parseCSVText(input);
+  if (rows.length < 2) {
+    return { mcqs: [], warnings: ["CSV has no data rows."], source: "csv" };
   }
 
-  const mcqs: ParsedMCQ[] = [];
-  result.data.forEach((row, idx) => {
-    const get = (...keys: string[]) => {
-      for (const k of keys) {
-        if (row[k] != null && String(row[k]).trim() !== "") return String(row[k]).trim();
+  const header = rows[0].map((h) => h.trim().toLowerCase());
+  // Map each standard field to a column index, picking the first matching alias
+  const col: Record<string, number> = {};
+  for (const [field, aliases] of Object.entries(HEADER_ALIASES)) {
+    for (const a of aliases) {
+      const idx = header.indexOf(a);
+      if (idx >= 0) {
+        col[field] = idx;
+        break;
       }
-      return "";
+    }
+  }
+  if (col.question === undefined) {
+    return {
+      mcqs: [],
+      warnings: ["CSV is missing a question column (expected: question, q, stem, …)."],
+      source: "csv",
     };
-    const question = get("question", "q", "stem", "question_text");
-    if (!question) {
-      warnings.push(`Row ${idx + 1}: no question column, skipped.`);
-      return;
-    }
-    const options: string[] = [];
-    for (const k of ["a", "b", "c", "d", "e", "f"]) {
-      const v = get(`option_${k}`, k, `opt_${k}`, `choice_${k}`);
-      if (v) options.push(v);
-    }
-    if (options.length < 2) {
-      warnings.push(`Row ${idx + 1}: needs at least 2 options, skipped.`);
-      return;
-    }
-    const ansRaw = get("answer", "correct", "correct_answer", "answer_index");
-    let correctIndex = 0;
-    if (/^\d+$/.test(ansRaw)) correctIndex = parseInt(ansRaw, 10);
-    else {
-      const m = ansRaw.toUpperCase().match(/^([A-Z])/);
-      if (m) correctIndex = m[1].charCodeAt(0) - 65;
-    }
-    if (correctIndex < 0 || correctIndex >= options.length) correctIndex = 0;
-    const explanation = get("explanation", "explain", "rationale") || undefined;
-    const diff = get("difficulty");
-    const difficulty = (["easy", "medium", "hard"] as const).find((d) => d === diff);
-    const topic = get("topic", "subject", "chapter", "section") || undefined;
-    mcqs.push({ question, options, correctIndex, explanation, difficulty, topic });
-  });
+  }
+  if (col.a === undefined && col.b === undefined) {
+    return {
+      mcqs: [],
+      warnings: ["CSV is missing option columns (expected: a, b, c, d, …)."],
+      source: "csv",
+    };
+  }
+
+  const mcqs = [];
+  for (let r = 1; r < rows.length; r++) {
+    const row = rows[r];
+    if (row.length === 1 && row[0] === "") continue;
+    const obj: Record<string, string> = {};
+    const get = (field: string): string => {
+      const idx = col[field];
+      if (idx === undefined) return "";
+      return (row[idx] ?? "").trim();
+    };
+    obj.question = get("question");
+    obj.a = get("a");
+    obj.b = get("b");
+    if (col.c !== undefined) obj.c = get("c");
+    if (col.d !== undefined) obj.d = get("d");
+    if (col.e !== undefined) obj.e = get("e");
+    if (col.f !== undefined) obj.f = get("f");
+    if (col.answer !== undefined) obj.answer = get("answer");
+    if (col.explanation !== undefined) obj.explanation = get("explanation");
+    if (col.topic !== undefined) obj.topic = get("topic");
+    if (col.difficulty !== undefined) obj.difficulty = get("difficulty");
+
+    const m = extractFromObject(obj);
+    if (m) mcqs.push(m);
+    else warnings.push(`Row ${r + 1}: could not extract MCQ, skipped.`);
+  }
 
   return { mcqs, warnings, source: "csv" };
 }
