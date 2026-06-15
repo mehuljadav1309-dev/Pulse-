@@ -2,35 +2,37 @@ import * as cheerio from "cheerio";
 import { extractFromObject } from "./normalize";
 import { inferSubjectSlug } from "./subject-infer";
 import type { ParseResult, ParsedMCQ } from "./types";
+import { extractMCQsFromHTML, extractedQuestionToParsedMCQ } from "./extract-html";
 
 /**
- * HTML parser — CEREB-style aware.
+ * HTML parser — CEREB / quiz-generator aware.
  *
- * Main path: extract `<h2>title</h2>\s*<iframe srcdoc="...">` blocks.
- *   - decode HTML entities in the srcdoc
- *   - find `questions = [...]` array via bracket-balanced scan
- *   - eval the literal via `new Function("return (...)")`
- *   - normalize each row through extractFromObject
+ * Primary path: use the deep deterministic extractor that scans iframe srcdoc,
+ * JS variables, JSON blobs, script tags, and encoded entities.
  *
- * Fallback paths:
- *   - if no <iframe> blocks, look for `<script>var questions = [...]</script>`
- *   - if no JS array at all, query `.question, .mcq, [data-question]` and read
- *     `.q/.stem` + `.option/.opt/li` + `data-answer`
- *
- * Per-block metadata (topic + subject) is inferred from the enclosing <h2>
- * title, the <title>, and the filename. These are attached to every MCQ
- * emitted from that block.
+ * Fallback: legacy CEREB iframe extraction + DOM fallback.
  */
+
 export async function parseHTML(html: string, filename = ""): Promise<ParseResult> {
   const warnings: string[] = [];
-  const mcqs: ParsedMCQ[] = [];
+  let mcqs: ParsedMCQ[] = [];
 
+  // ── Primary path: deep deterministic extractor ─────────
+  const result = extractMCQsFromHTML(html, filename);
+  if (result.questions.length > 0) {
+    mcqs = result.questions.map(extractedQuestionToParsedMCQ);
+    warnings.push(...result.warnings);
+    if (result.warnings.length === 0) {
+      warnings.push(`Deep extractor found ${mcqs.length} MCQ${mcqs.length === 1 ? "" : "s"}.`);
+    }
+    return { mcqs, warnings, source: "html" };
+  }
+
+  // ── Fallback: legacy CEREB iframe extraction ────────────
   const $ = cheerio.load(html);
   $("script, style, noscript").remove();
 
-  // 1. CEREB iframe blocks
   const iframeBlocks: Array<{ title: string; srcdoc: string }> = [];
-
   $("iframe[srcdoc]").each((_, el) => {
     const $iframe = $(el);
     const srcdoc = $iframe.attr("srcdoc") ?? "";
@@ -62,7 +64,6 @@ export async function parseHTML(html: string, filename = ""): Promise<ParseResul
           `CEREB block "${title || "(untitled)"}": ${added} MCQ${added === 1 ? "" : "s"} extracted.`
         );
       } else {
-        // DOM fallback inside this iframe
         const fromDom = domFallback(cheerio.load(decoded));
         for (const m of fromDom) {
           if (!m.topic && inferredTopic) m.topic = inferredTopic;
@@ -71,13 +72,13 @@ export async function parseHTML(html: string, filename = ""): Promise<ParseResul
         }
         if (fromDom.length === 0) {
           warnings.push(
-            `CEREB block "${title || "(untitled)"}": no questions array and no .question blocks found.`
+            `CEREB block "${title || "(untitled)"}": no questions found.`
           );
         }
       }
     }
   } else {
-    // 2. Inline <script>var questions = [...]</script>
+    // Inline <script>var questions = [...]</script>
     const scripts = $("script").map((_, el) => $(el).html() ?? "").get();
     for (const s of scripts) {
       const arr = extractJSArray(s, warnings);
@@ -95,7 +96,7 @@ export async function parseHTML(html: string, filename = ""): Promise<ParseResul
       }
     }
 
-    // 3. DOM fallback
+    // DOM fallback
     if (mcqs.length === 0) {
       const dom = domFallback($);
       for (const m of dom) {
@@ -117,7 +118,7 @@ export async function parseHTML(html: string, filename = ""): Promise<ParseResul
   return { mcqs, warnings, source: "html" };
 }
 
-// -------------------- helpers --------------------
+// ─── Helpers ─────────────────────────────────────────────
 
 function decodeEntities(s: string): string {
   return s
@@ -132,46 +133,27 @@ function decodeEntities(s: string): string {
     .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCharCode(parseInt(n, 16)));
 }
 
-/**
- * Find a JS array literal (e.g. `questions = [...]` or `var q = [...]`) inside
- * a string and evaluate it. Uses bracket-balancing, ignoring brackets inside
- * string literals.
- */
 function extractJSArray(source: string, warnings: string[]): unknown[] | null {
-  // 1) find a candidate array start: '[' preceded by an identifier and '=' or '('
   const startIdx = findArrayStart(source);
   if (startIdx < 0) return null;
 
-  // 2) bracket-balance to find the matching ']'
   let depth = 0;
   let inString: '"' | "'" | "`" | null = null;
   let escape = false;
   let endIdx = -1;
   for (let i = startIdx; i < source.length; i++) {
     const c = source[i];
-    if (escape) {
-      escape = false;
-      continue;
-    }
+    if (escape) { escape = false; continue; }
     if (inString) {
-      if (c === "\\") {
-        escape = true;
-        continue;
-      }
+      if (c === "\\") { escape = true; continue; }
       if (c === inString) inString = null;
       continue;
     }
-    if (c === '"' || c === "'" || c === "`") {
-      inString = c as '"' | "'" | "`";
-      continue;
-    }
+    if (c === '"' || c === "'" || c === "`") { inString = c as '"' | "'" | "`"; continue; }
     if (c === "[") depth++;
     else if (c === "]") {
       depth--;
-      if (depth === 0) {
-        endIdx = i;
-        break;
-      }
+      if (depth === 0) { endIdx = i; break; }
     }
   }
   if (endIdx < 0) {
@@ -180,11 +162,7 @@ function extractJSArray(source: string, warnings: string[]): unknown[] | null {
   }
 
   const literal = source.slice(startIdx, endIdx + 1);
-
-  // 3) Evaluate. `new Function` is more forgiving than JSON.parse — it accepts
-  //    single quotes, trailing commas, and identifier keys.
   try {
-    // eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func
     const fn = new Function(`return (${literal});`);
     const result = fn();
     if (Array.isArray(result)) return result;
@@ -198,15 +176,12 @@ function extractJSArray(source: string, warnings: string[]): unknown[] | null {
 }
 
 function findArrayStart(source: string): number {
-  // Try to find a keyword like 'questions' or 'q' or any identifier followed by
-  // '=' or ':' or '(' and then a '['.
   const re = /(^|[\s;,({])([A-Za-z_$][A-Za-z0-9_$]*)\s*[:=]\s*\[/g;
   let m: RegExpExecArray | null;
   while ((m = re.exec(source))) {
     const idx = m.index + m[0].lastIndexOf("[");
     return idx;
   }
-  // Fallback: first top-level '[' that looks like an array
   const idx = source.indexOf("[");
   return idx;
 }
@@ -245,12 +220,7 @@ function domFallback($: cheerio.CheerioAPI): ParsedMCQ[] {
     const explanation =
       $b.find(".explanation, .solution, .rationale").first().text().trim() || undefined;
 
-    out.push({
-      question,
-      options,
-      correctIndex,
-      explanation: explanation || undefined,
-    });
+    out.push({ question, options, correctIndex, explanation: explanation || undefined });
   }
   return out;
 }
