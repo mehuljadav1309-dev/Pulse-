@@ -37,6 +37,22 @@ export async function fileToText(
 function htmlToText(html: string): string {
   const $ = cheerio.load(html);
   $("script, style, noscript").remove();
+
+  // ── CEREB path: extract iframe srcdoc, decode, send clean question text to AI ──
+  const srcdocs: string[] = [];
+  $("iframe[srcdoc]").each((_, el) => {
+    const raw = $(el).attr("srcdoc") ?? "";
+    if (raw.trim()) srcdocs.push(decodeEntities(raw));
+  });
+  if (srcdocs.length > 0) {
+    const combined = srcdocs.join("\n\n==========\n\n");
+    // Try to find `questions = [...]` in decoded content
+    const extracted = extractQuestionsArray(combined);
+    if (extracted) return extracted;
+    return combined;
+  }
+
+  // ── Default path: extract readable text from block elements ──
   const blocks: string[] = [];
   $("h1, h2, h3, h4, h5, h6, p, li, tr, pre, br").each((_, el) => {
     const t = $(el).text().replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim();
@@ -44,4 +60,44 @@ function htmlToText(html: string): string {
   });
   if (blocks.length === 0) return $.text();
   return blocks.join("\n");
+}
+
+/** Decode HTML entities (single- and double-encoded). */
+function decodeEntities(s: string): string {
+  let prev: string;
+  let curr = s;
+  do {
+    prev = curr;
+    curr = curr
+      .replace(/&quot;/g, '"')
+      .replace(/&apos;/g, "'")
+      .replace(/&#39;/g, "'")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&amp;/g, "&")
+      .replace(/&nbsp;/g, " ")
+      .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(parseInt(n, 10)))
+      .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCharCode(parseInt(n, 16)));
+  } while (curr !== prev);
+  return curr;
+}
+
+/** Try to locate `questions = [...]` in plain text and return its JSON content. */
+function extractQuestionsArray(text: string): string | null {
+  const re = /questions\s*=\s*(\[[\s\S]*?\])/;
+  const m = re.exec(text);
+  if (!m) return null;
+  try {
+    const parsed = JSON.parse(m[1]);
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      return JSON.stringify(parsed, null, 2);
+    }
+  } catch {
+    // not parseable, return the extracted text block around the match
+  }
+  // Return a window of text around the match
+  const idx = m.index;
+  const start = Math.max(0, idx - 500);
+  const end = Math.min(text.length, idx + m[1].length + 1000);
+  return text.slice(start, end);
 }
