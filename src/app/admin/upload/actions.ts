@@ -6,8 +6,6 @@ import { requireAdmin } from "@/lib/admin";
 import { parseFile } from "@/lib/parse";
 import { hashQuestion } from "@/lib/parse/dedup";
 import { ALL_SUBJECT_SLUGS } from "@/lib/parse/subject-infer";
-import type { ParsedMCQ } from "@/lib/parse/types";
-
 export type PreviewMCQ = {
   uid: string;
   question: string;
@@ -77,6 +75,7 @@ export async function uploadMCQFile(
   const topicId = String(formData.get("topicId") ?? "");
   const newTopicName = String(formData.get("newTopicName") ?? "").trim();
   const filenameOverride = String(formData.get("filename") ?? "").trim();
+  const aiEnabled = formData.get("aiEnabled") !== "0";
 
   if (!(file instanceof File) || file.size === 0) {
     return { status: "error", message: "Please choose a file." };
@@ -88,20 +87,20 @@ export async function uploadMCQFile(
     return handleInsert(ctx.dbUserId, formData, filename);
   }
 
-  return handlePreview(ctx.dbUserId, file, { subjectId, topicId, newTopicName, filename });
+  return handlePreview(ctx.dbUserId, file, { subjectId, topicId, newTopicName, filename, aiEnabled });
 }
 
 async function handlePreview(
   dbUserId: string,
   file: File,
-  opts: { subjectId: string; topicId: string; newTopicName: string; filename: string }
+  opts: { subjectId: string; topicId: string; newTopicName: string; filename: string; aiEnabled?: boolean }
 ): Promise<UploadFormState> {
-  const { filename } = opts;
+  const { filename, aiEnabled } = opts;
   const existingHashes = await loadAllHashes();
 
   const parsed = await parseFile(file, {
     knownHashes: existingHashes,
-    aiFallback: true,
+    aiFallback: aiEnabled === true,
     aiAlways: false,
   });
 

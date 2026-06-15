@@ -2565,3 +2565,44 @@ body:not(.dash-dark) .upload-spinner {
   margin-top: 0.5rem;
 }
 
+/* ─── AI Toggle ──────────────────────────────────────────── */
+
+.upload-form__options {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.upload-form__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  user-select: none;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.upload-form__toggle input {
+  accent-color: #4f8cff;
+}
+
+.upload-form__toggle-hint {
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+body:not(.dash-dark) .upload-form__toggle {
+  color: #5a6275;
+  border-color: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+body:not(.dash-dark) .upload-form__toggle-hint {
+  color: #9ca3af;
+}
+

@@ -4,13 +4,16 @@ import { useFormState, useFormStatus } from "react-dom";
 import { useState, useCallback } from "react";
 import {
   IconCloudUpload, IconFile, IconPlus, IconSparkles,
-  IconX, IconBrain, IconAlertTriangle, IconCheck,
+  IconX, IconBrain, IconCheck,
 } from "@tabler/icons-react";
 import { uploadMCQFile, type UploadFormState, type PreviewMCQ } from "./actions";
 import { UploadPreview } from "./UploadPreview";
 
 type Subject = { id: string; name: string; slug: string };
 type Topic = { id: string; name: string; slug: string; subjectId: string };
+type Step = "form" | "preview" | "success";
+
+const INITIAL_STATE: UploadFormState = { status: "idle" };
 
 export function UploadForm({
   subjects,
@@ -21,13 +24,15 @@ export function UploadForm({
 }) {
   const [state, formAction] = useFormState<UploadFormState, FormData>(
     uploadMCQFile,
-    { status: "idle" }
+    INITIAL_STATE
   );
+  const [step, setStep] = useState<Step>("form");
   const [file, setFile] = useState<File | null>(null);
   const [drag, setDrag] = useState(false);
   const [subjectId, setSubjectId] = useState<string>("");
   const [newTopic, setNewTopic] = useState<string>("");
   const [topicId, setTopicId] = useState<string>("");
+  const [aiEnabled, setAiEnabled] = useState(true);
   const [insertPending, setInsertPending] = useState(false);
 
   const filteredTopics = topics.filter((t) => t.subjectId === subjectId);
@@ -37,9 +42,11 @@ export function UploadForm({
   const handlePreview = useCallback(
     (fd: FormData) => {
       fd.set("mode", "preview");
+      fd.set("aiEnabled", aiEnabled ? "1" : "0");
       formAction(fd);
+      setStep("preview");
     },
-    [formAction]
+    [formAction, aiEnabled]
   );
 
   const handleConfirm = useCallback(
@@ -52,23 +59,27 @@ export function UploadForm({
       fd.set("newTopicName", newTopic);
       fd.set("filename", file?.name ?? "upload");
       fd.set("mcqs", JSON.stringify(selectedMCQs));
+      fd.set("aiEnabled", aiEnabled ? "1" : "0");
       formAction(fd);
+      setStep("success");
     },
-    [formAction, subjectId, topicId, newTopic, file]
+    [formAction, subjectId, topicId, newTopic, file, aiEnabled]
   );
 
   const handleCancel = useCallback(() => {
-    formAction(new FormData());
-  }, [formAction]);
+    setStep("form");
+  }, []);
 
-  const resetForm = useCallback(() => {
+  const handleReset = useCallback(() => {
+    setStep("form");
     setFile(null);
     setSubjectId("");
     setTopicId("");
     setNewTopic("");
-  }, []);
+    formAction(new FormData());
+  }, [formAction]);
 
-  if (state.status === "preview" && state.preview) {
+  if (step === "preview" && state.status === "preview" && state.preview) {
     return (
       <div className="upload-form">
         <UploadPreview
@@ -94,7 +105,7 @@ export function UploadForm({
     );
   }
 
-  if (state.status === "success") {
+  if (step === "success" && state.status === "success") {
     return (
       <div className="upload-form">
         <div className="upload-alert upload-alert--ok">
@@ -145,10 +156,7 @@ export function UploadForm({
         </div>
         <button
           className="admin-btn admin-btn--primary"
-          onClick={() => {
-            resetForm();
-            formAction(new FormData());
-          }}
+          onClick={handleReset}
           style={{ marginTop: "0.75rem" }}
         >
           Upload another file
@@ -165,8 +173,7 @@ export function UploadForm({
           <div>
             <strong>Auto-detect mode.</strong> Subject and topic will be inferred
             from the file (CEREB iframe titles, JSON/CSV <code>topic</code> field,
-            HTML <code>Topic:</code> lines, or filename keywords). Leave as-is
-            unless you want to force a specific subject.
+            HTML <code>Topic:</code> lines, or filename keywords).
           </div>
         </div>
       )}
@@ -233,9 +240,18 @@ export function UploadForm({
         </label>
       </div>
 
-      <div className="upload-form__hint">
-        <strong>AI-powered:</strong> Extracts MCQs using OpenRouter (Qwen3-80B → Gemma-4 fallback).
-        Questions are previewed before insertion — review confidence scores, flag issues, and edit as needed.
+      <div className="upload-form__options">
+        <label className="upload-form__toggle">
+          <input
+            type="checkbox"
+            checked={aiEnabled}
+            onChange={(e) => setAiEnabled(e.target.checked)}
+          />
+          <span>AI Enhancement</span>
+          <span className="upload-form__toggle-hint">
+            Uses OpenRouter (Qwen3-80B) for better extraction from noisy files
+          </span>
+        </label>
       </div>
 
       <label
@@ -283,13 +299,14 @@ export function UploadForm({
               Accepts <code>.pdf</code>, <code>.html</code>, <code>.csv</code>, <code>.json</code>
             </div>
             <div className="upload-drop__ai">
-              <IconBrain size={11} /> AI-powered extraction with preview
+              <IconBrain size={11} />
+              {aiEnabled ? "AI-powered extraction with preview" : "Deterministic extraction only"}
             </div>
           </div>
         )}
       </label>
 
-      <ExtractButton />
+      <ExtractButton aiEnabled={aiEnabled} />
 
       {state.status === "error" && (
         <div className="upload-alert upload-alert--err">
@@ -311,7 +328,7 @@ function IconChevronRightMini() {
   );
 }
 
-function ExtractButton() {
+function ExtractButton({ aiEnabled }: { aiEnabled: boolean }) {
   const { pending } = useFormStatus();
   return (
     <button
@@ -327,7 +344,7 @@ function ExtractButton() {
       ) : (
         <>
           <IconBrain size={16} style={{ verticalAlign: -2, marginRight: 6 }} />
-          Extract & Preview
+          {aiEnabled ? "Extract & Preview" : "Extract MCQs"}
         </>
       )}
     </button>

@@ -98,7 +98,7 @@ export function extractFromObject(input: unknown): ParsedMCQ | null {
 
   // 3. Answer resolution
   let correctIndex = -1;
-  const ans = pick("answer", "ans", "correct", "correctIndex", "answerIndex");
+  const ans = pick("correct_answer", "answer", "ans", "correct", "correctIndex", "answerIndex");
   if (typeof ans === "number") {
     correctIndex = ans;
   } else if (typeof ans === "string") {

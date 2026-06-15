@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import {
   IconBrain, IconAlertTriangle, IconCheck, IconX,
   IconEdit, IconTrash, IconChevronDown, IconChevronRight,
-  IconFilter, IconEye, IconEyeOff, IconDotsVertical,
+  IconFilter, IconDotsVertical,
 } from "@tabler/icons-react";
 import type { PreviewMCQ } from "./actions";
 
@@ -41,6 +41,15 @@ export function UploadPreview({
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editData, setEditData] = useState<PreviewMCQ | null>(null);
+
+  if (!mcqs || mcqs.length === 0) {
+    return (
+      <div className="upload-preview upload-preview--empty">
+        <p>No MCQs to preview.</p>
+        <button className="admin-btn" onClick={onCancel}>Go back</button>
+      </div>
+    );
+  }
 
   const needsReview = mcqs.filter((m) => m.aiNeedsReview);
   const highConfidence = mcqs.filter((m) => (m.aiConfidence ?? 100) >= 85);
