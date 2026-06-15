@@ -48,7 +48,7 @@ export default async function AdminLayout({
           <div className="admin-side__user-email">{ctx.email}</div>
         </div>
       </aside>
-      <main className="admin-main">{children}</main>
+      <main className="admin-main dark-ui-optimized">{children}</main>
     </div>
   );
 }
